@@ -16,3 +16,5 @@ app:
     secret: 1234
     duration:
       days: 2
+  admin:
+    password: 1234

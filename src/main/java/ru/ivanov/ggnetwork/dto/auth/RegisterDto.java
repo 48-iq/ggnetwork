@@ -15,6 +15,7 @@ public class RegisterDto {
     private String username;
     @PasswordConstraint
     private String password;
+    private String adminPassword;
     @RoleConstraint
     private String role;
     private String name;

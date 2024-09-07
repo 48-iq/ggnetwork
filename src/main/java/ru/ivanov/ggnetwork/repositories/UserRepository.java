@@ -35,7 +35,17 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     "where (users.name || ' ' || users.surname) like ('%' || ?1 || '%') " +
                     "union " +
                     "select * from users " +
-                    "where (users.username) like ('%' || ?1 || '%')")
+                    "where (users.username) like ('%' || ?1 || '%')",
+            countQuery = "select count(*) from (" +
+                    "select * from users " +
+                    "where (users.surname || ' ' || users.name) like ('%' || ?1 || '%') " +
+                    "union " +
+                    "select * from users " +
+                    "where (users.name || ' ' || users.surname) like ('%' || ?1 || '%') " +
+                    "union " +
+                    "select * from users " +
+                    "where (users.username) like ('%' || ?1 || '%')" +
+                    ")")
     Page<User> findByQuery(String query, Pageable pageable);
 
 

@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,6 +39,8 @@ public class AuthController {
     private ImageService imageService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${app.admin.password}")
+    private String adminPassword;
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
@@ -57,6 +60,9 @@ public class AuthController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<String> register(@ModelAttribute @Valid RegisterDto registerDto) {
+        if (registerDto.getRole().equals("ROLE_ADMIN") &&
+                !adminPassword.equals(registerDto.getAdminPassword()))
+            return ResponseEntity.badRequest().body("incorrect admin password");
 
         var user = User.builder()
                 .username(registerDto.getUsername())
