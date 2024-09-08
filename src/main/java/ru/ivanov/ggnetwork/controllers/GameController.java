@@ -39,4 +39,26 @@ public class GameController {
         gameService.deleteGame(title);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping
+    public ResponseEntity<?> getGames(@RequestParam(required = false) String query,
+                                      @RequestParam(required = false) Integer page,
+                                      @RequestParam(required = false) Integer size) {
+
+        if ((page != null && size == null) || (page == null && size != null))
+            return ResponseEntity.badRequest().body("param page must be declared with param size");
+
+        if (query != null && !query.isEmpty()) {
+            if (page != null)
+                return ResponseEntity.ok(gameService.findGamesByQuery(query, page, size));
+            else
+                return ResponseEntity.ok(gameService.findGamesByQuery(query));
+        }
+        else {
+            if (page != null)
+                return ResponseEntity.ok(gameService.findAllGames(page, size));
+            else
+                return ResponseEntity.ok(gameService.findAllGames());
+        }
+    }
 }

@@ -23,5 +23,4 @@ public class RegisterDto {
     private String status;
     @EmailConstraint
     private String email;
-    private MultipartFile icon;
 }

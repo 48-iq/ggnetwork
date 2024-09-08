@@ -4,18 +4,18 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "images")
-@Getter
-@Setter
+@Table(name = "user_images")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Image {
+@Getter
+@Setter
+public class UserImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(unique = true, nullable = false)
-    private String filename;
-    private String filepath;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+    private String image;
 }

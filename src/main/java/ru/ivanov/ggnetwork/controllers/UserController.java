@@ -22,7 +22,7 @@ public class UserController {
     @PutMapping("/{username}")
     @PreAuthorize("authentication.principal.username == #username")
     public ResponseEntity<UserDto> updateUser(@PathVariable String username,
-                                              @ModelAttribute UserUpdateDto userUpdateDto) {
+                                              @RequestBody UserUpdateDto userUpdateDto) {
 
         var user = userService.updateUser(username, userUpdateDto);
         return ResponseEntity.ok(user);
@@ -46,7 +46,6 @@ public class UserController {
                 return ResponseEntity.ok(userService.findUsers());
             else
                 return ResponseEntity.ok(userService.findUsers(page, size));
-
         }
         else {
             if (page == null)

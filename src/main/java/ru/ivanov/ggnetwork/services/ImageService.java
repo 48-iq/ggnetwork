@@ -77,7 +77,7 @@ public class ImageService {
             if (imageOptional.isPresent()) {
                 var image = imageOptional.get();
                 if (Files.exists(Path.of(image.getFilepath()))) {
-                    Files.delete(Path.of(image.getFilename()));
+                    Files.delete(Path.of(image.getFilepath()));
                 }
                 imageRepository.deleteById(image.getId());
             }

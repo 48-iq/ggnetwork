@@ -59,7 +59,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<String> register(@ModelAttribute @Valid RegisterDto registerDto) {
+    public ResponseEntity<String> register(@RequestBody @Valid RegisterDto registerDto) {
         if (registerDto.getRole().equals("ROLE_ADMIN") &&
                 !adminPassword.equals(registerDto.getAdminPassword()))
             return ResponseEntity.badRequest().body("incorrect admin password");
@@ -74,8 +74,6 @@ public class AuthController {
                 .status(registerDto.getStatus())
                 .build();
 
-        if (registerDto.getIcon() != null)
-            user.setIcon(imageService.save(registerDto.getIcon()));
         var savedUser = userRepository.saveAndFlush(user);
         var authToken = new UsernamePasswordAuthenticationToken(savedUser.getUsername(), savedUser.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(savedUser.getRole().name())));

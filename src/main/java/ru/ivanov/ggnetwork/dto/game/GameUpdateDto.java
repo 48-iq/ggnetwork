@@ -1,5 +1,6 @@
 package ru.ivanov.ggnetwork.dto.game;
 
+import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -22,6 +22,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private UserImageService userImageService;
 
     public UserDto getUserByUsername(String username) {
         var userOptional = userRepository.findByUsername(username);
@@ -37,12 +39,6 @@ public class UserService {
         if (userOptional.isEmpty())
             throw new EntityNotFoundException("user with username " + username + " not found");
         var user = userOptional.get();
-        if (userUpdateDto.getIcon() != null) {
-            if (user.getIcon() == null)
-                user.setIcon(imageService.save(userUpdateDto.getIcon()));
-            else
-                imageService.update(userUpdateDto.getIcon(), user.getIcon());
-        }
         user.setName(userUpdateDto.getName());
         user.setSurname(userUpdateDto.getSurname());
         user.setEmail(userUpdateDto.getEmail());
@@ -56,8 +52,8 @@ public class UserService {
         var userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
             var user = userOptional.get();
-            if (user.getIcon() != null)
-                imageService.delete(user.getIcon());
+            userImageService.removeAllImages(username);
+            userRepository.removeUserRelations(user.getUsername());
             userRepository.deleteById(user.getId());
         }
     }
