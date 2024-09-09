@@ -3,10 +3,12 @@ package ru.ivanov.ggnetwork.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ivanov.ggnetwork.dto.PageDto;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
+import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
 import ru.ivanov.ggnetwork.exceptions.EntityNotFoundException;
 import ru.ivanov.ggnetwork.repositories.UserRepository;
@@ -21,15 +23,29 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private ImageService imageService;
-    @Autowired
     private UserImageService userImageService;
 
     public UserDto getUserByUsername(String username) {
         var userOptional = userRepository.findByUsername(username);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with "+ username + " not found");
+            throw new EntityNotFoundException("user with " + username + " not found");
         return UserDto.from(userOptional.get());
+    }
+
+    public UserInfoDto getUserInfoByUsername(String username) {
+        var userOptional = userRepository.findByUsername(username);
+        if (userOptional.isEmpty())
+            throw new EntityNotFoundException("user with " + username + " not found");
+        var user = userOptional.get();
+        var userInfoDto = new UserInfoDto();
+        userInfoDto.setUsername(username);
+        userInfoDto.setIcon(user.getIcon());
+        userInfoDto.setName(user.getName());
+        userInfoDto.setSurname(user.getSurname());
+        userInfoDto.setStatus(user.getStatus());
+        userInfoDto.setEmail(user.getEmail());
+        userInfoDto.setImages(userImageService.getImagesByUser(user.getUsername()));
+        return userInfoDto;
     }
 
 

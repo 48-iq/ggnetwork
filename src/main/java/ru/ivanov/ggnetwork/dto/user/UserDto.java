@@ -14,18 +14,14 @@ public class UserDto {
     private String username;
     private String name;
     private String surname;
-    private String status;
-    private String email;
     private String icon;
 
     public static UserDto from(User user) {
         return UserDto.builder()
                 .username(user.getUsername())
-                .email(user.getEmail())
                 .icon(user.getIcon())
                 .name(user.getName())
                 .surname(user.getSurname())
-                .status(user.getStatus())
                 .build();
     }
 }

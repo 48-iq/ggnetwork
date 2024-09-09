@@ -2,6 +2,7 @@ package ru.ivanov.ggnetwork.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -46,6 +47,5 @@ public class User {
             joinColumns = @JoinColumn(name = "subscribed_user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> subscriptions;
-
 
 }

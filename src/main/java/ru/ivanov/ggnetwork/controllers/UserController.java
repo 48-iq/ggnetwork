@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
+import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
 import ru.ivanov.ggnetwork.services.UserService;
 
@@ -16,6 +17,12 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<UserDto> getUser(@PathVariable String username) {
         var user =  userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{username}/info")
+    public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable String username) {
+        var user = userService.getUserInfoByUsername(username);
         return ResponseEntity.ok(user);
     }
 

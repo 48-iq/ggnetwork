@@ -18,4 +18,5 @@ public class UserInfoDto {
     private String icon;
     private List<String> images;
     private String status;
+    private String email;
 }

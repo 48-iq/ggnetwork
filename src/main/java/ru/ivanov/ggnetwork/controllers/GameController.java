@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.dto.game.GameCreateDto;
 import ru.ivanov.ggnetwork.dto.game.GameDto;
 import ru.ivanov.ggnetwork.dto.game.GameUpdateDto;
-import ru.ivanov.ggnetwork.entities.Game;
 import ru.ivanov.ggnetwork.services.GameService;
 
 @RestController
