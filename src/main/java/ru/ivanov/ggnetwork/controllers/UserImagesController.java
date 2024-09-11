@@ -23,7 +23,7 @@ public class UserImagesController {
     @PostMapping
     public ResponseEntity<String> addImage(@PathVariable String username,
                                            @ModelAttribute ImageDto imageDto) {
-        var image = userImageService.addImage(username, imageDto.getFile());
+        var image = userImageService.addImage(username, imageDto.getImage());
         return ResponseEntity.ok(image);
     }
 

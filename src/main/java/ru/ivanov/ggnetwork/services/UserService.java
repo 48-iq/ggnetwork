@@ -3,7 +3,6 @@ package ru.ivanov.ggnetwork.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.ivanov.ggnetwork.dto.PageDto;
@@ -69,7 +68,9 @@ public class UserService {
         if (userOptional.isPresent()) {
             var user = userOptional.get();
             userImageService.removeAllImages(username);
-            userRepository.removeUserRelations(user.getUsername());
+            userRepository.removeUserGroupsAndUsersGroupsAssociations(user.getUsername());
+            userRepository.removeUsersUsersAssociations(username);
+            userRepository.removeUserGamesAssociations(user.getUsername());
             userRepository.deleteById(user.getId());
         }
     }

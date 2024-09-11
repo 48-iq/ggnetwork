@@ -16,11 +16,14 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(unique = true)
     private String title;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
+
     @ManyToMany
     @JoinTable(name = "groups_users",
             uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}),

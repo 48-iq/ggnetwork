@@ -8,5 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class ImageDto {
-    private MultipartFile file;
+    private MultipartFile image;
+    {
+        String a = "a" + null;
+    }
 }

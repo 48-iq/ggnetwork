@@ -94,7 +94,27 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     "delete from games_user_has_played " +
                     "where user_id = (select id from users where username = ?1)"
     )
-    void removeUserRelations(String username);
+    void removeUserGamesAssociations(String username);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from groups_users " +
+                    "where user_id = (select id from users where username = ?1); " +
+                    "delete from groups_users " +
+                    "where group_id in (select id from groups " +
+                    "where owner_id = (select id from users where username = ?1)); " +
+                    "delete from groups " +
+                    "where id in (select id from groups " +
+                    "where owner_id = (select id from users where username = ?1))")
+    void removeUserGroupsAndUsersGroupsAssociations(String username);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from subscriptions " +
+                    "where subscribed_user_id = (select id from users where username = ?1) " +
+                    "or " +
+                    "user_id = (select id from users where username = ?1)")
+    void removeUsersUsersAssociations(String username);
 
     @Query(nativeQuery = true,
         value = "select * from subscriptions as s1 " +

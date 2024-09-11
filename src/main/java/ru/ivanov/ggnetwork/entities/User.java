@@ -48,4 +48,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> subscriptions;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Group> groups;
+
 }
