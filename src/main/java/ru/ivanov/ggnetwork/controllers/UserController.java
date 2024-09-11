@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
 import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
@@ -22,12 +23,13 @@ public class UserController {
 
     @GetMapping("/{username}/info")
     public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable String username) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
         var user = userService.getUserInfoByUsername(username);
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{username}")
-    @PreAuthorize("authentication.principal.username == #username")
+    @PreAuthorize("authentication.name == #username")
     public ResponseEntity<UserDto> updateUser(@PathVariable String username,
                                               @RequestBody UserUpdateDto userUpdateDto) {
 
@@ -36,8 +38,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
-   // @PreAuthorize("authentication.principal.username == #username")
+    @PreAuthorize("authentication.name == #username")
     public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+        System.out.println();
         userService.deleteUser(username);
         return ResponseEntity.ok().build();
     }

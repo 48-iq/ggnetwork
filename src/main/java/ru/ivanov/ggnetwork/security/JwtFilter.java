@@ -33,10 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 var jwt = authHeader.substring(7);
                 if (jwt.isBlank()) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid jwt token");
+                    throw new JWTVerificationException("Invalid jwt token");
                 } else {
-                    var username = jwtUtils.validateTokenAndRetrieveUsername(jwt);
-                    var userDetails = userDetailsService.loadUserByUsername(username);
+                    var userDetails = jwtUtils.validateTokenAndRetrieveUserdetails(jwt);
                     var token = new UsernamePasswordAuthenticationToken(userDetails,
                             userDetails.getPassword(), userDetails.getAuthorities());
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -45,10 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (JWTVerificationException e) {
-            response.getWriter().write("invalid jwt token");
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-        } catch (UsernameNotFoundException e) {
+        } catch (JWTVerificationException|UsernameNotFoundException e) {
             response.getWriter().write(e.getMessage());
             response.setStatus(HttpStatus.BAD_REQUEST.value());
         }

@@ -70,7 +70,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
                     "values (" +
                     "(select id from groups where title = ?1), " +
                     "(select id from users where username = ?2)" +
-                    ")")
+                    ") on conflict do nothing")
     void subscribe(String title, String username);
 
     @Modifying
