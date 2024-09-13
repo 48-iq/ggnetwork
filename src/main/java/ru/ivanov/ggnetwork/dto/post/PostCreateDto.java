@@ -1,4 +1,4 @@
-package ru.ivanov.ggnetwork.dto.group;
+package ru.ivanov.ggnetwork.dto.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GroupUpdateDto {
+public class PostCreateDto {
     private String title;
-    private String description;
-    private MultipartFile icon;
+    private String content;
+    private MultipartFile image;
+
 }

@@ -9,7 +9,7 @@ import ru.ivanov.ggnetwork.services.GroupService;
 import ru.ivanov.ggnetwork.services.UsersGroupsService;
 
 @RestController
-@RequestMapping("/api/users/{username}/groups")
+@RequestMapping("/api/users/{userId}/groups")
 public class UserGroupsController {
 
     @Autowired
@@ -19,47 +19,47 @@ public class UserGroupsController {
 
     @PostMapping
     public ResponseEntity<?> createGroup(@ModelAttribute @Valid GroupCreateDto groupCreateDto,
-                                         @PathVariable String username) {
-        var group = groupService.createGroup(groupCreateDto, username);
-        usersGroupsService.subscribe(username, group.getTitle());
+                                         @PathVariable Integer userId) {
+        var group = groupService.createGroup(groupCreateDto, userId);
+        usersGroupsService.subscribe(userId, group.getId());
         return ResponseEntity.ok(group);
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<?> subscribe(@RequestParam String title,
-                                       @PathVariable String username) {
-        usersGroupsService.subscribe(username, title);
+    public ResponseEntity<?> subscribe(@RequestParam Integer groupId,
+                                       @PathVariable Integer userId) {
+        usersGroupsService.subscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/unsubscribe")
-    public ResponseEntity<?> unsubscribe(@RequestParam String title,
-                                         @PathVariable String username) {
-        usersGroupsService.unsubscribe(username, title);
+    public ResponseEntity<?> unsubscribe(@RequestParam Integer groupId,
+                                         @PathVariable Integer userId) {
+        usersGroupsService.unsubscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<?> getGroups(@PathVariable String username,
+    public ResponseEntity<?> getGroups(@PathVariable Integer userId,
                                         @RequestParam(required = false) Integer page,
                                         @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page != null)
-            return ResponseEntity.ok(usersGroupsService.findGroupsByUser(username, page, size));
+            return ResponseEntity.ok(usersGroupsService.findGroupsByUser(userId, page, size));
         else
-            return ResponseEntity.ok(usersGroupsService.findGroupsByUser(username));
+            return ResponseEntity.ok(usersGroupsService.findGroupsByUser(userId));
     }
     @GetMapping("/owned")
-    public ResponseEntity<?> getGroupsByOwner(@PathVariable String username,
+    public ResponseEntity<?> getGroupsByOwner(@PathVariable Integer userId,
                                         @RequestParam(required = false) Integer page,
                                         @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page != null)
-            return ResponseEntity.ok(usersGroupsService.findGroupsByOwner(username, page, size));
+            return ResponseEntity.ok(usersGroupsService.findGroupsByOwner(userId, page, size));
         else
-            return ResponseEntity.ok(usersGroupsService.findGroupsByOwner(username));
+            return ResponseEntity.ok(usersGroupsService.findGroupsByOwner(userId));
     }
 
 

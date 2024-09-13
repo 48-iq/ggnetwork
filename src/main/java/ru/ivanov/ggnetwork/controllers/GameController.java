@@ -14,9 +14,9 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @GetMapping("/{title}")
-    public ResponseEntity<GameDto> getGame(@PathVariable String title) {
-        var game = gameService.findGameByTitle(title);
+    @GetMapping("/{gameId}")
+    public ResponseEntity<GameDto> getGame(@PathVariable Integer gameId) {
+        var game = gameService.findGameById(gameId);
         return ResponseEntity.ok(game);
     }
 
@@ -26,16 +26,16 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @PutMapping("/{title}")
+    @PutMapping("/{gameId}")
     public ResponseEntity<GameDto> updateGame(@ModelAttribute GameUpdateDto gameDto,
-                                              @PathVariable String title) {
-        var game = gameService.updateGame(title, gameDto);
+                                              @PathVariable Integer gameId) {
+        var game = gameService.updateGame(gameId, gameDto);
         return ResponseEntity.ok(game);
     }
 
-    @DeleteMapping("/{title}")
-    public ResponseEntity<Void> deleteGame(@PathVariable String title) {
-        gameService.deleteGame(title);
+    @DeleteMapping("/{gameId}")
+    public ResponseEntity<Void> deleteGame(@PathVariable Integer gameId) {
+        gameService.deleteGame(gameId);
         return ResponseEntity.ok().build();
     }
 

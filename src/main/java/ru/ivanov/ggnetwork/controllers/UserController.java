@@ -15,33 +15,31 @@ import ru.ivanov.ggnetwork.services.UserService;
 public class UserController {
     @Autowired
     private UserService userService;
-    @GetMapping("/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable String username) {
-        var user =  userService.getUserByUsername(username);
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Integer userId) {
+        var user =  userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/{username}/info")
-    public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable String username) {
+    @GetMapping("/{userId}/info")
+    public ResponseEntity<UserInfoDto> getUserInfo(@PathVariable Integer userId) {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
-        var user = userService.getUserInfoByUsername(username);
+        var user = userService.getUserInfoById(userId);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{username}")
-    @PreAuthorize("authentication.name == #username")
-    public ResponseEntity<UserDto> updateUser(@PathVariable String username,
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Integer userId,
                                               @RequestBody UserUpdateDto userUpdateDto) {
 
-        var user = userService.updateUser(username, userUpdateDto);
+        var user = userService.updateUser(userId, userUpdateDto);
         return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/{username}")
-    @PreAuthorize("authentication.name == #username")
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer userId) {
         System.out.println();
-        userService.deleteUser(username);
+        userService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }
 

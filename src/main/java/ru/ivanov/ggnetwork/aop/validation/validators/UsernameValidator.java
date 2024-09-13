@@ -11,6 +11,8 @@ public class UsernameValidator implements ConstraintValidator<UsernameConstraint
     @Override
     public boolean isValid(String username,
                            ConstraintValidatorContext constraintValidatorContext) {
+        if (username == null || username.isEmpty())
+            return false;
         var pattern = Pattern.compile("[a-zA-Z0-9_\\-]{3,32}");
         var matcher = pattern.matcher(username);
         return matcher.matches();

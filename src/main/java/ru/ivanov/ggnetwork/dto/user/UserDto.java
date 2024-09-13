@@ -11,13 +11,15 @@ import ru.ivanov.ggnetwork.entities.User;
 @AllArgsConstructor
 @Builder
 public class UserDto {
+    private Integer id;
     private String username;
     private String name;
     private String surname;
-    private String icon;
+    private Integer icon;
 
     public static UserDto from(User user) {
         return UserDto.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .icon(user.getIcon())
                 .name(user.getName())

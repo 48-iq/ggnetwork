@@ -5,42 +5,49 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.ivanov.ggnetwork.entities.Image;
-import ru.ivanov.ggnetwork.entities.UserImage;
+import ru.ivanov.ggnetwork.entities.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface UserImageRepository extends JpaRepository<UserImage, Integer> {
-    @Query("select i from UserImage i join i.user u where u.username = :username")
-    List<UserImage> findImagesByUsername(String username);
+public interface UserImageRepository extends JpaRepository<User, Integer> {
+    @Query(nativeQuery = true,
+            value = "select * from images as i join users_images as ui " +
+                    "on i.id = ui.image_id " +
+                    "where ui.user_id = ?1")
+    List<Image> findImagesByUser(Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into user_images(user_id, image) " +
-                    "values((select id from users where username = ?1), ?2)")
-    void addImageToUser(String username, String image);
+            value = "insert into users_images(user_id, image_id) " +
+                    "values(?1, ?2)")
+    void addUserImageAssociation(Integer userId, Integer imageId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from user_images where " +
-                    "user_id = (select id from users where username = ?1) " +
+            value = "delete from users_images where " +
+                    "user_id = ?1 " +
                     "and " +
-                    "image = ?2")
-    void removeImageFromUser(String username, String image);
+                    "image_id = ?2")
+    void removeUserImageAssociation(Integer userId, Integer imageId);
 
     @Query(nativeQuery = true,
-            value = "select image from user_images where " +
-                    "user_id = (select id from users where username = ?1)")
-    List<String> getAllUserImages(String username);
+            value = "select * from images where " +
+                    "id in (select id from users_images where user_id = ?1)")
+    List<Image> getAllUserImages(Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from user_images where " +
-                    "user_id = (select id from users where username = ?1)")
-    void removeAllUserImages(String username);
+            value = "delete from users_images where " +
+                    "user_id = ?1")
+    void removeAllUserImagesAssociations(Integer userId);
 
-    Optional<UserImage> findByImage(String image);
+    @Query(nativeQuery = true,
+            value = "select exist( " +
+                    "select 1 from users_images where user_id = ?1 and image_id = ?2 " +
+                    ")")
+    boolean checkOnBelong(Integer userId, Integer imageId);
+
 
 
 }

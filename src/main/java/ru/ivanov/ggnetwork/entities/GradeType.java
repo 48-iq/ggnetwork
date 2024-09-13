@@ -1,5 +1,5 @@
 package ru.ivanov.ggnetwork.entities;
 
-public enum RateType {
+public enum GradeType {
     LIKE, DISLIKE
 }

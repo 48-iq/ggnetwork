@@ -25,11 +25,11 @@ public class Group {
     private User owner;
 
     @ManyToMany
-    @JoinTable(name = "groups_users",
+    @JoinTable(name = "users_groups",
             uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}),
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> users;
-    private String icon;
+    private Integer icon;
     private String description;
 }

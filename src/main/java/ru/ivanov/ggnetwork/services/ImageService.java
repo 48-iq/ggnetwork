@@ -21,7 +21,7 @@ public class ImageService {
     @Autowired
     private UuidService uuidService;
 
-    public String save(MultipartFile file) {
+    public Integer save(MultipartFile file) {
         try {
             if (!Files.exists(Path.of("/images")))
                 Files.createDirectory(Path.of("/images"));
@@ -34,21 +34,21 @@ public class ImageService {
             try (var outputStream = new FileOutputStream(filepath.toFile())) {
                 outputStream.write(file.getBytes());
             }
-            imageRepository.save(Image.builder()
+            var savedImage = imageRepository.save(Image.builder()
                     .filename(filename)
                     .filepath(filepath.toString())
                     .build());
-            return filename;
+            return savedImage.getId();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void update(MultipartFile file, String filename) {
+    public void update(MultipartFile file, Integer id) {
         try {
-            var imageOptional = imageRepository.findByFilename(filename);
+            var imageOptional = imageRepository.findById(id);
             if (imageOptional.isEmpty())
-                throw new EntityNotFoundException("image with filename " + filename + " not found");
+                throw new EntityNotFoundException("image with id " + id + " not found");
             var filepath = imageOptional.get().getFilepath();
             try (var fileOutputStream = new FileOutputStream(filepath)) {
                 fileOutputStream.write(file.getBytes());
@@ -58,11 +58,11 @@ public class ImageService {
         }
     }
 
-    public InputStreamResource get(String filename) {
+    public InputStreamResource get(Integer id) {
         try {
-            var imageOptional = imageRepository.findByFilename(filename);
+            var imageOptional = imageRepository.findById(id);
             if (imageOptional.isEmpty())
-                throw new EntityNotFoundException("image with filename " + filename + " not found");
+                throw new EntityNotFoundException("image with id " + id + " not found");
             var filepath = imageOptional.get().getFilepath();
             var fileInputStream = new FileInputStream(filepath);
             return new InputStreamResource(fileInputStream);
@@ -71,9 +71,9 @@ public class ImageService {
         }
     }
 
-    public void delete(String filename) {
+    public void delete(Integer id) {
         try {
-            var imageOptional = imageRepository.findByFilename(filename);
+            var imageOptional = imageRepository.findById(id);
             if (imageOptional.isPresent()) {
                 var image = imageOptional.get();
                 if (Files.exists(Path.of(image.getFilepath()))) {

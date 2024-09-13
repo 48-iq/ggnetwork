@@ -19,7 +19,7 @@ public class GroupChat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String image;
+    private Integer icon;
     @ManyToMany
     @JoinTable(name = "users_group_chats",
             uniqueConstraints = @UniqueConstraint(columnNames = {"group_chat_id", "user_id"}),

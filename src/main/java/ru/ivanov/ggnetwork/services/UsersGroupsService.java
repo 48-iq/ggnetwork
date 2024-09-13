@@ -23,14 +23,14 @@ public class UsersGroupsService {
     @Autowired
     private UserRepository userRepository;
 
-    private void checkUser(String username) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username " + username + " not found");
+    private void checkUser(Integer userId) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with userId " + userId + " not found");
     }
 
-    private void checkGroup(String title) {
-        if (!groupRepository.existsByTitle(title))
-            throw new EntityNotFoundException("group with title " + title + " not found");
+    private void checkGroup(Integer groupId) {
+        if (!groupRepository.existsById(groupId))
+            throw new EntityNotFoundException("group with id " + groupId + " not found");
     }
 
     private PageDto<GroupDto> groupPageDtoFrom(Page<Group> page) {
@@ -51,46 +51,46 @@ public class UsersGroupsService {
         return pageDto;
     }
     @Transactional
-    public void subscribe(String username, String title) {
-        checkGroup(title);
-        checkUser(username);
-        groupRepository.subscribe(title, username);
+    public void subscribe(Integer userId, Integer groupId) {
+        checkGroup(groupId);
+        checkUser(userId);
+        groupRepository.subscribe(groupId, userId);
     }
 
     @Transactional
-    public void unsubscribe(String username, String title) {
-        checkGroup(title);
-        checkUser(username);
-        groupRepository.unsubscribe(title, username);
+    public void unsubscribe(Integer userId, Integer groupId) {
+        checkGroup(groupId);
+        checkUser(userId);
+        groupRepository.unsubscribe(groupId, userId);
     }
 
-    public List<GroupDto> findGroupsByUser(String username) {
-        return groupRepository.findGroupsByUser(username)
+    public List<GroupDto> findGroupsByUser(Integer userId) {
+        return groupRepository.findGroupsByUser(userId)
                 .stream().map(GroupDto::from).toList();
     }
 
-    public PageDto<GroupDto> findGroupsByUser(String username, Integer page, Integer size) {
+    public PageDto<GroupDto> findGroupsByUser(Integer userId, Integer page, Integer size) {
         return groupPageDtoFrom(groupRepository
-                .findGroupsByUser(username, PageRequest.of(page, size)));
+                .findGroupsByUser(userId, PageRequest.of(page, size)));
     }
 
-    public List<UserDto> findUsersByGroup(String title) {
-        return groupRepository.findUsersByGroup(title)
+    public List<UserDto> findUsersByGroup(Integer groupId) {
+        return groupRepository.findUsersByGroup(groupId)
                 .stream().map(UserDto::from).toList();
     }
 
-    public PageDto<UserDto> findUsersByGroup(String title, Integer page, Integer size) {
+    public PageDto<UserDto> findUsersByGroup(Integer groupId, Integer page, Integer size) {
         return userPageDtoFrom(groupRepository
-                .findUsersByGroup(title, PageRequest.of(page, size)));
+                .findUsersByGroup(groupId, PageRequest.of(page, size)));
     }
 
-    public List<GroupDto> findGroupsByOwner(String username) {
-        return groupRepository.findGroupsByOwner(username)
+    public List<GroupDto> findGroupsByOwner(Integer userId) {
+        return groupRepository.findGroupsByOwner(userId)
                 .stream().map(GroupDto::from).toList();
     }
 
-    public PageDto<GroupDto> findGroupsByOwner(String username, Integer page, Integer size) {
-        return groupPageDtoFrom(groupRepository.findGroupsByOwner(username, PageRequest.of(page, size)));
+    public PageDto<GroupDto> findGroupsByOwner(Integer userId, Integer page, Integer size) {
+        return groupPageDtoFrom(groupRepository.findGroupsByOwner(userId, PageRequest.of(page, size)));
     }
 
 

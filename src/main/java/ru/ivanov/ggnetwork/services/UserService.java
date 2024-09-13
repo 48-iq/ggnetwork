@@ -9,7 +9,9 @@ import ru.ivanov.ggnetwork.dto.PageDto;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
 import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
+import ru.ivanov.ggnetwork.entities.Image;
 import ru.ivanov.ggnetwork.exceptions.EntityNotFoundException;
+import ru.ivanov.ggnetwork.repositories.UserPostRepository;
 import ru.ivanov.ggnetwork.repositories.UserRepository;
 
 import java.util.List;
@@ -23,36 +25,31 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserImageService userImageService;
+    @Autowired
+    private UserPostRepository userPostRepository;
 
-    public UserDto getUserByUsername(String username) {
-        var userOptional = userRepository.findByUsername(username);
+    public UserDto getUserById(Integer userId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with " + username + " not found");
+            throw new EntityNotFoundException("user with id " + userId + " not found");
         return UserDto.from(userOptional.get());
     }
 
-    public UserInfoDto getUserInfoByUsername(String username) {
-        var userOptional = userRepository.findByUsername(username);
+    public UserInfoDto getUserInfoById(Integer userId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with " + username + " not found");
+            throw new EntityNotFoundException("user with " + userId + " not found");
         var user = userOptional.get();
-        var userInfoDto = new UserInfoDto();
-        userInfoDto.setUsername(username);
-        userInfoDto.setIcon(user.getIcon());
-        userInfoDto.setName(user.getName());
-        userInfoDto.setSurname(user.getSurname());
-        userInfoDto.setStatus(user.getStatus());
-        userInfoDto.setEmail(user.getEmail());
-        userInfoDto.setImages(userImageService.getImagesByUser(user.getUsername()));
-        return userInfoDto;
+        var images = userImageService.getImagesByUser(user.getId());
+        return UserInfoDto.from(user, images);
     }
 
 
     @Transactional
-    public UserDto updateUser(String username, UserUpdateDto userUpdateDto) {
-        var userOptional = userRepository.findByUsername(username);
+    public UserDto updateUser(Integer userId, UserUpdateDto userUpdateDto) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with username " + username + " not found");
+            throw new EntityNotFoundException("user with id " + userId + " not found");
         var user = userOptional.get();
         user.setName(userUpdateDto.getName());
         user.setSurname(userUpdateDto.getSurname());
@@ -63,14 +60,15 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String username) {
-        var userOptional = userRepository.findByUsername(username);
+    public void deleteUser(Integer userId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             var user = userOptional.get();
-            userImageService.removeAllImages(username);
-            userRepository.removeUserGroupsAndUsersGroupsAssociations(user.getUsername());
-            userRepository.removeUsersUsersAssociations(username);
-            userRepository.removeUserGamesAssociations(user.getUsername());
+            userImageService.removeAllImages(userId);
+            userPostRepository.removePostsByUser(userId);
+            userRepository.removeUserGroupsAndUsersGroupsAssociations(user.getId());
+            userRepository.removeUsersUsersAssociations(userId);
+            userRepository.removeUserGamesAssociations(user.getId());
             userRepository.deleteById(user.getId());
         }
     }

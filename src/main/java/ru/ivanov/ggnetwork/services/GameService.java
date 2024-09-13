@@ -22,10 +22,10 @@ public class GameService {
     @Autowired
     private ImageService imageService;
 
-    public GameDto findGameByTitle(String title) {
-        var gameOptional = gameRepository.findByTitle(title);
+    public GameDto findGameById(Integer gameId) {
+        var gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isEmpty())
-            throw new EntityNotFoundException("game with title " + title + " not found");
+            throw new EntityNotFoundException("game with id " + gameId + " not found");
         var game = gameOptional.get();
         return GameDto.from(game);
     }
@@ -44,10 +44,10 @@ public class GameService {
     }
 
     @Transactional
-    public GameDto updateGame(String title, GameUpdateDto gameDto) {
-        var gameOptional = gameRepository.findByTitle(title);
+    public GameDto updateGame(Integer gameId, GameUpdateDto gameDto) {
+        var gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isEmpty())
-            throw new EntityNotFoundException("game with title " + title + " not found");
+            throw new EntityNotFoundException("game with title " + gameId + " not found");
         var game = gameOptional.get();
         if (gameDto.getIcon() != null) {
             imageService.update(gameDto.getIcon(), game.getIcon());
@@ -58,13 +58,13 @@ public class GameService {
     }
 
     @Transactional
-    public void deleteGame(String title) {
-        var gameOptional = gameRepository.findByTitle(title);
+    public void deleteGame(Integer gameId) {
+        var gameOptional = gameRepository.findById(gameId);
         if (gameOptional.isPresent()) {
             var game = gameOptional.get();
             if (game.getIcon() != null)
                 imageService.delete(game.getIcon());
-            gameRepository.removeGameRelations(game.getTitle());
+            gameRepository.removeGameRelations(game.getId());
             gameRepository.deleteById(game.getId());
         }
     }

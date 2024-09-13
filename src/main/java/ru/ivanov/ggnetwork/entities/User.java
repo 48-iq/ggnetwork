@@ -25,7 +25,13 @@ public class User {
     private String name;
     private String surname;
     private String status;
-    private String icon;
+    private Integer icon;
+
+    @ManyToMany
+    @JoinTable(name = "users_images",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id"))
+    private List<Image> images;
 
     @ManyToMany
     @JoinTable(name = "games_user_has_played",

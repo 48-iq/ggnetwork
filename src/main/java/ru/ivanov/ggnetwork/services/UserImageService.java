@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ivanov.ggnetwork.entities.UserImage;
+import ru.ivanov.ggnetwork.entities.Image;
 import ru.ivanov.ggnetwork.exceptions.EntityNotFoundException;
+import ru.ivanov.ggnetwork.repositories.ImageRepository;
 import ru.ivanov.ggnetwork.repositories.UserImageRepository;
 import ru.ivanov.ggnetwork.repositories.UserRepository;
 
@@ -20,57 +21,59 @@ public class UserImageService {
     private ImageService imageService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ImageRepository imageRepository;
 
 
-    public List<String> getImagesByUser(String username) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username " + username + " not found");
-        return userImageRepository.findImagesByUsername(username)
-                .stream().map(UserImage::getImage).toList();
+    public List<Integer> getImagesByUser(Integer userId) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with username " + userId + " not found");
+        return userImageRepository.findImagesByUser(userId)
+                .stream().map(Image::getId).toList();
     }
 
     @Transactional
-    public String addImage(String username, MultipartFile file) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username" + username + " not found");
+    public Integer addImage(Integer userId, MultipartFile file) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with username" + userId + " not found");
         var image = imageService.save(file);
-        userImageRepository.addImageToUser(username, image);
+        userImageRepository.addUserImageAssociation(userId, image);
         return image;
     }
 
     @Transactional
-    public void removeImage(String username, String image) {
-        var userOptional = userRepository.findByUsername(username);
+    public void removeImage(Integer userId, Integer imageId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with username " + username + " not found");
+            throw new EntityNotFoundException("user with username " + userId + " not found");
         var user = userOptional.get();
-        if (image.equals(user.getIcon()))
+        if (imageId.equals(user.getIcon()))
             user.setIcon(null);
-        userImageRepository.removeImageFromUser(username, image);
-        imageService.delete(image);
+        imageService.delete(imageId);
+        userImageRepository.removeUserImageAssociation(userId, imageId);
     }
 
     @Transactional
-    public void removeAllImages(String username) {
-        var userOptional = userRepository.findByUsername(username);
+    public void removeAllImages(Integer userId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with username " + username + " not found");
-        var images = userImageRepository.getAllUserImages(username);
-        userImageRepository.removeAllUserImages(username);
+            throw new EntityNotFoundException("user with username " + userId + " not found");
+        var images = userImageRepository.getAllUserImages(userId);
+        userImageRepository.removeAllUserImagesAssociations(userId);
         for (var image: images) {
-            imageService.delete(image);
+            imageService.delete(image.getId());
         }
     }
 
     @Transactional
-    public void setIcon(String username, String image) {
-        var userOptional = userRepository.findByUsername(username);
+    public void setIcon(Integer userId, Integer imageId) {
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw  new EntityNotFoundException("user with username " + username + " not found");
-        var userImage = userImageRepository.findByImage(image);
-        if (userImage.isEmpty() || !username.equals(userImage.get().getUser().getUsername()))
-            throw new EntityNotFoundException("image with name " + image + " not found or not belong you");
+            throw  new EntityNotFoundException("user with username " + userId + " not found");
+        var imageOptional = imageRepository.findById(imageId);
+        if (imageOptional.isEmpty() || !userImageRepository.checkOnBelong(userId, imageId))
+            throw new EntityNotFoundException("image with id " + imageId + " not found or not belong you");
         var user = userOptional.get();
-        user.setIcon(image);
+        user.setIcon(imageId);
     }
 }

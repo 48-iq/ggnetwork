@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "group_posts")
 @Getter
@@ -18,8 +20,11 @@ public class GroupPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    private String description;
-    private String image;
+    private String content;
+    private Integer image;
+    private LocalDateTime time;
+    @Column(unique = true)
+    private String uuid;
     @ManyToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private Group creator;

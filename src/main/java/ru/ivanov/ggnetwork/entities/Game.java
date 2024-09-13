@@ -20,7 +20,8 @@ public class Game {
     @Column(unique = true)
     private String title;
     private String description;
-    private String icon;
+    private Integer icon;
+
 
     @ManyToMany(mappedBy = "gamesUserHasPlayed")
     private List<User> usersHasPlayed;

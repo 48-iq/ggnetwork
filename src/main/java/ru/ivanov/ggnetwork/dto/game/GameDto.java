@@ -9,12 +9,14 @@ import ru.ivanov.ggnetwork.entities.Game;
 @Builder
 @ToString
 public class GameDto {
+    private Integer id;
     private String title;
     private String description;
-    private String icon;
+    private Integer icon;
 
     public static GameDto from(Game game) {
         return GameDto.builder()
+                .id(game.getId())
                 .title(game.getTitle())
                 .icon(game.getIcon())
                 .description(game.getDescription())

@@ -16,24 +16,24 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     Optional<Game> findByTitle(String title);
     boolean existsByTitle(String title);
 
-    @Query("select g from User u join u.gamesUserHasPlayed g where u.username = :username")
-    List<Game> findGamesUserHasPlayed(String username);
-    @Query("select g from User u join u.gamesUserPlays g where u.username = :username")
-    List<Game> findGamesUserPlays(String username);
+    @Query("select g from User u join u.gamesUserHasPlayed g where u.id = :id")
+    List<Game> findGamesUserHasPlayed(Integer id);
+    @Query("select g from User u join u.gamesUserPlays g where u.id = :id")
+    List<Game> findGamesUserPlays(Integer id);
 
-    @Query("select g from User u join u.gamesUserHasPlayed g where u.username = :username")
-    Page<Game> findGamesUserHasPlayed(String username, Pageable pageable);
-    @Query("select g from User u join u.gamesUserPlays g where u.username = :username")
-    Page<Game> findGamesUserPlays(String username, Pageable pageable);
+    @Query("select g from User u join u.gamesUserHasPlayed g where u.id = :id")
+    Page<Game> findGamesUserHasPlayed(Integer id, Pageable pageable);
+    @Query("select g from User u join u.gamesUserPlays g where u.id = :id")
+    Page<Game> findGamesUserPlays(Integer id, Pageable pageable);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from games_user_plays " +
-                    "where game_id = (select id from games where title = ?1);" +
+                    "where game_id = ?1; " +
                     "delete from games_user_has_played " +
-                    "where game_id = (select id from games where title = ?1)"
+                    "where game_id = ?1"
     )
-    void removeGameRelations(String title);
+    void removeGameRelations(Integer id);
 
     @Query(nativeQuery = true,
             value = "select * from games where " +
@@ -41,11 +41,11 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     List<Game> findGamesByQuery(String query);
 
     @Query(nativeQuery = true,
-            value = "select * from games where" +
-                    "title like '%' || ?1 || '%'",
-            countQuery = "select count(*) from (" +
+            value = "select * from games where " +
+                    "title like '%' || ?1 || '%' ",
+            countQuery = "select count(*) from ( " +
                     "select * from games where " +
-                    "title like '%' || ?1 '%'" +
+                    "title like '%' || ?1 '%' " +
                     ")")
     Page<Game> findGamesByQuery(String query, Pageable pageable);
 }

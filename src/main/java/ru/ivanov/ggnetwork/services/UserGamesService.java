@@ -21,45 +21,45 @@ public class UserGamesService {
     @Autowired
     private GameRepository gameRepository;
 
-    private void checkOnExists(String username, String title) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username " + username + " not found");
-        if (!gameRepository.existsByTitle(title))
-            throw new EntityNotFoundException("game with title " + title + " not found");
+    private void checkOnExists(Integer userId, Integer gameId) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with id " + userId + " not found");
+        if (!gameRepository.existsById(gameId))
+            throw new EntityNotFoundException("game with id " + gameId + " not found");
     }
 
     @Transactional
-    public void addGameToUserHasPlayed(String username, String title) {
-        checkOnExists(username, title);
-        userRepository.addGameToGamesUserHasPlayed(username, title);
+    public void addGameToUserHasPlayed(Integer userId, Integer gameId) {
+        checkOnExists(userId, gameId);
+        userRepository.addGameToGamesUserHasPlayed(userId, gameId);
     }
 
     @Transactional
-    public void addGameToUserPlays(String username, String title) {
-        checkOnExists(username, title);
-        userRepository.addGameToGamesUserPlays(username, title);
+    public void addGameToUserPlays(Integer userId, Integer gameId) {
+        checkOnExists(userId, gameId);
+        userRepository.addGameToGamesUserPlays(userId, gameId);
     }
 
     @Transactional
-    public void removeGameFromUserHasPlayed(String username, String title) {
-        checkOnExists(username, title);
-        userRepository.removeGameFromGamesUserHasPlayed(username, title);
+    public void removeGameFromUserHasPlayed(Integer userId, Integer gameId) {
+        checkOnExists(userId, gameId);
+        userRepository.removeGameFromGamesUserHasPlayed(userId, gameId);
     }
 
     @Transactional
-    public void removeGameFromUserPlays(String username, String title) {
-        checkOnExists(username, title);
-        userRepository.removeGameFromGamesUserPlays(username, title);
+    public void removeGameFromUserPlays(Integer userId, Integer gameId) {
+        checkOnExists(userId, gameId);
+        userRepository.removeGameFromGamesUserPlays(userId, gameId);
     }
 
-    public List<GameDto> getGamesUserPlays(String username) {
-        return gameRepository.findGamesUserPlays(username)
+    public List<GameDto> getGamesUserPlays(Integer userId) {
+        return gameRepository.findGamesUserPlays(userId)
                 .stream().map(GameDto::from)
                 .toList();
     }
 
-    public List<GameDto> getGamesUserHasPlayed(String username) {
-        return gameRepository.findGamesUserHasPlayed(username)
+    public List<GameDto> getGamesUserHasPlayed(Integer userId) {
+        return gameRepository.findGamesUserHasPlayed(userId)
                 .stream().map(GameDto::from)
                 .toList();
     }
@@ -73,17 +73,17 @@ public class UserGamesService {
         return pageDto;
     }
 
-    public PageDto<GameDto> getGamesUserPlays(String username, Integer page, Integer size) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username " + username + "not found");
-        var gamesPage = gameRepository.findGamesUserPlays(username, PageRequest.of(page, size));
+    public PageDto<GameDto> getGamesUserPlays(Integer userId, Integer page, Integer size) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with id " + userId + "not found");
+        var gamesPage = gameRepository.findGamesUserPlays(userId, PageRequest.of(page, size));
         return pageFrom(gamesPage);
     }
 
-    public PageDto<GameDto> getGamesUserHasPlayed(String username, Integer page, Integer size) {
-        if (!userRepository.existsByUsername(username))
-            throw new EntityNotFoundException("user with username " + username + "not found");
-        var gamesPage = gameRepository.findGamesUserHasPlayed(username, PageRequest.of(page, size));
+    public PageDto<GameDto> getGamesUserHasPlayed(Integer userId, Integer page, Integer size) {
+        if (!userRepository.existsById(userId))
+            throw new EntityNotFoundException("user with id " + userId + "not found");
+        var gamesPage = gameRepository.findGamesUserHasPlayed(userId, PageRequest.of(page, size));
         return pageFrom(gamesPage);
     }
 

@@ -9,64 +9,64 @@ import ru.ivanov.ggnetwork.services.UserGamesService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/{username}/games")
+@RequestMapping("/api/users/{userId}/games")
 public class UserGamesController {
     @Autowired
     private UserGamesService userGamesService;
 
     @PostMapping("/plays")
-    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable String username,
-                                        @RequestParam String title) {
+    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable Integer userId,
+                                        @RequestParam Integer gameId) {
 
-        userGamesService.addGameToUserPlays(username, title);
+        userGamesService.addGameToUserPlays(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/played")
-    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable String username,
-                                                @RequestParam String title) {
+    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable Integer userId,
+                                                @RequestParam Integer gameId) {
 
-        userGamesService.addGameToUserHasPlayed(username, title);
+        userGamesService.addGameToUserHasPlayed(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/plays")
-    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable String username,
-                                                    @RequestParam String title) {
+    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable Integer userId,
+                                                    @RequestParam Integer gameId) {
 
-        userGamesService.removeGameFromUserPlays(username, title);
+        userGamesService.removeGameFromUserPlays(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/played")
-    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable String username,
-                                                    @RequestParam String title) {
+    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable Integer userId,
+                                                    @RequestParam Integer gameId) {
 
-        userGamesService.removeGameFromUserHasPlayed(username, title);
+        userGamesService.removeGameFromUserHasPlayed(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/plays")
-    public ResponseEntity<?> getGamesUserPlays(@PathVariable String username,
+    public ResponseEntity<?> getGamesUserPlays(@PathVariable Integer userId,
                                                            @RequestParam(required = false) Integer page,
                                                            @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page == null)
-            return ResponseEntity.ok(userGamesService.getGamesUserPlays(username));
+            return ResponseEntity.ok(userGamesService.getGamesUserPlays(userId));
         else
-            return ResponseEntity.ok(userGamesService.getGamesUserPlays(username, page, size));
+            return ResponseEntity.ok(userGamesService.getGamesUserPlays(userId, page, size));
     }
 
     @GetMapping("/played")
-    public ResponseEntity<?> getGamesUserHasPlayed(@PathVariable String username,
+    public ResponseEntity<?> getGamesUserHasPlayed(@PathVariable Integer userId,
                                                @RequestParam(required = false) Integer page,
                                                @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page == null)
-            return ResponseEntity.ok(userGamesService.getGamesUserHasPlayed(username));
+            return ResponseEntity.ok(userGamesService.getGamesUserHasPlayed(userId));
         else
-            return ResponseEntity.ok(userGamesService.getGamesUserHasPlayed(username, page, size));
+            return ResponseEntity.ok(userGamesService.getGamesUserHasPlayed(userId, page, size));
     }
 }

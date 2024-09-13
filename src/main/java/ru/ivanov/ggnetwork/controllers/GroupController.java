@@ -3,7 +3,6 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ivanov.ggnetwork.dto.group.GroupCreateDto;
 import ru.ivanov.ggnetwork.dto.group.GroupDto;
 import ru.ivanov.ggnetwork.dto.group.GroupUpdateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
@@ -14,9 +13,9 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
-    @GetMapping("/{title}")
-    public ResponseEntity<GroupDto> findGroupByTitle(@PathVariable String title) {
-        return ResponseEntity.ok(groupService.findGroupByTitle(title));
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupDto> findGroupByTitle(@PathVariable Integer groupId) {
+        return ResponseEntity.ok(groupService.findGroupById(groupId));
     }
 
     @GetMapping
@@ -41,15 +40,15 @@ public class GroupController {
         }
     }
 
-    @PutMapping("/{title}")
-    public ResponseEntity<?> updateGroup(@PathVariable String title,
+    @PutMapping("/{groupId}")
+    public ResponseEntity<?> updateGroup(@PathVariable Integer groupId,
                                          @ModelAttribute GroupUpdateDto groupUpdateDto) {
-        return ResponseEntity.ok(groupService.updateGroup(title, groupUpdateDto));
+        return ResponseEntity.ok(groupService.updateGroup(groupId, groupUpdateDto));
     }
 
-    @DeleteMapping("/{title}")
-    public ResponseEntity<?> deleteGroup(@PathVariable String title) {
-        groupService.deleteGroup(title);
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<?> deleteGroup(@PathVariable Integer groupId) {
+        groupService.deleteGroup(groupId);
         return ResponseEntity.ok().build();
     }
 

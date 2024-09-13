@@ -9,12 +9,14 @@ import ru.ivanov.ggnetwork.entities.Group;
 @Builder
 @ToString
 public class GroupDto {
+    private Integer id;
     private String title;
     private String description;
-    private String icon;
+    private Integer icon;
 
     public static GroupDto from(Group group) {
         return GroupDto.builder()
+                .id(group.getId())
                 .title(group.getTitle())
                 .description(group.getDescription())
                 .icon(group.getIcon())

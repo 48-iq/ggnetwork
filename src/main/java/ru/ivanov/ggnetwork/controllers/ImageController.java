@@ -16,9 +16,9 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-    @GetMapping("/{filename}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-        var imageResource = imageService.get(filename);
+    @GetMapping("/{imageId}")
+    public ResponseEntity<Resource> getImage(@PathVariable Integer imageId) {
+        var imageResource = imageService.get(imageId);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageResource);
     }
 }

@@ -52,167 +52,164 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying
     @Query(nativeQuery = true,
             value = "insert into games_user_has_played(user_id, game_id) " +
-                    "values((select id from users where username = ?1), " +
-                    "(select id from games where title = ?2)) " +
+                    "values(?1, ?2) " +
                     "on conflict(user_id, game_id) " +
                     "do nothing"
     )
-    void addGameToGamesUserHasPlayed(String username, String title);
+    void addGameToGamesUserHasPlayed(Integer userId, Integer gameId);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "insert into games_user_plays(user_id, game_id) " +
-                    "values((select id from users where username = ?1), " +
-                    "(select id from games where title = ?2)) " +
+                    "values(?1, ?2) " +
                     "on conflict(user_id, game_id) " +
                     "do nothing"
     )
-    void addGameToGamesUserPlays(String username, String title);
+    void addGameToGamesUserPlays(Integer user_id, Integer gameId);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from games_user_plays " +
-                    "where user_id = (select id from users where username = ?1) " +
+                    "where user_id = ?1 " +
                     "and " +
-                    "game_id = (select id from games where title = ?2)"
+                    "game_id = ?2"
     )
-    void removeGameFromGamesUserPlays(String username, String title);
+    void removeGameFromGamesUserPlays(Integer userId, Integer game_id);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from games_user_has_played " +
-                    "where user_id = (select id from users where username = ?1) " +
+                    "where user_id = ?1 " +
                     "and " +
-                    "game_id = (select id from games where title = ?2)"
+                    "game_id = ?2"
     )
-    void removeGameFromGamesUserHasPlayed(String username, String title);
+    void removeGameFromGamesUserHasPlayed(Integer userId, Integer game_id);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from games_user_plays " +
-                    "where user_id = (select id from users where username = ?1);" +
+                    "where user_id = ?1; " +
                     "delete from games_user_has_played " +
-                    "where user_id = (select id from users where username = ?1)"
+                    "where user_id = ?1"
     )
-    void removeUserGamesAssociations(String username);
+    void removeUserGamesAssociations(Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from groups_users " +
-                    "where user_id = (select id from users where username = ?1); " +
-                    "delete from groups_users " +
+            value = "delete from users_groups " +
+                    "where user_id = ?1; " +
+                    "delete from users_groups " +
                     "where group_id in (select id from groups " +
-                    "where owner_id = (select id from users where username = ?1)); " +
+                    "where owner_id = ?1); " +
                     "delete from groups " +
                     "where id in (select id from groups " +
-                    "where owner_id = (select id from users where username = ?1))")
-    void removeUserGroupsAndUsersGroupsAssociations(String username);
+                    "where owner_id = ?1)")
+    void removeUserGroupsAndUsersGroupsAssociations(Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from subscriptions " +
-                    "where subscribed_user_id = (select id from users where username = ?1) " +
+                    "where subscribed_user_id = ?1 " +
                     "or " +
-                    "user_id = (select id from users where username = ?1)")
-    void removeUsersUsersAssociations(String username);
+                    "user_id = ?1")
+    void removeUsersUsersAssociations(Integer userId);
 
     @Query(nativeQuery = true,
         value = "select * from subscriptions as s1 " +
                 "join subscriptions as s2 on s1.user_id = s2.subscribed_user_id " +
                 "join users as u on s1.user_id = u.id " +
-                "where s1.subscribed_user_id = (select id from users where username = ?1) " +
-                "and s2.user_id = (select id from users where username = ?1)")
-    List<User> findFriends(String username);
+                "where s1.subscribed_user_id = ?1 " +
+                "and s2.user_id = ?1")
+    List<User> findFriends(Integer userId);
 
     @Query(nativeQuery = true,
             value = "select * from subscriptions as s1 " +
                     "join subscriptions as s2 on s1.user_id = s2.subscribed_user_id " +
                     "join users as u on s1.user_id = u.id " +
-                    "where s1.subscribed_user_id = (select id from users where username = ?1) " +
-                    "and s2.user_id = (select id from users where username = ?1)",
-            countQuery = "select count(*) from (" +
+                    "where s1.subscribed_user_id = ?1 " +
+                    "and s2.user_id = ?1",
+            countQuery = "select count(*) from ( " +
                     "select * from subscriptions as s1 " +
                     "join subscriptions as s2 on s1.user_id = s2.subscribed_user_id " +
                     "join users as u on s1.user_id = u.id " +
-                    "where s1.subscribed_user_id = (select id from users where username = ?1) " +
-                    "and s2.user_id = (select id from users where username = ?1)" +
+                    "where s1.subscribed_user_id = ?1 " +
+                    "and s2.user_id = ?1 " +
                     ")"
     )
-    Page<User> findFriends(String username, Pageable pageable);
+    Page<User> findFriends(Integer userId, Pageable pageable);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into subscriptions(subscribed_user_id, user_id) values" +
-                    "((select id from users where username = ?1), " +
-                    "(select id from users where username = ?2))")
-    void subscribe(String subscribedUsername, String username);
+            value = "insert into subscriptions(subscribed_user_id, user_id) " +
+                    "values (?1, ?2) on conflict(subscribed_user_id, user_id) do nothing")
+    void subscribe(Integer subscribedUserId, Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from subscriptions where " +
-                    "subscribed_user_id = (select id from users where username = ?1) " +
+                    "subscribed_user_id = ?1 " +
                     "and " +
-                    "user_id = (select id from users where username = ?2)")
-    void unsubscribe(String subscribedUsername, String username);
+                    "user_id = ?2")
+    void unsubscribe(Integer subscribedUserId, Integer userId);
 
     @Query(nativeQuery = true,
             value = "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.user_id = u.id " +
-                    "where s.subscribed_user_id = (select id from users where username = ?1)")
-    List<User> findSubscriptions(String username);
+                    "where s.subscribed_user_id = ?1")
+    List<User> findSubscriptions(Integer userId);
 
     @Query(nativeQuery = true,
             value = "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.user_id = u.id " +
-                    "where s.subscribed_user_id = (select id from users where username = ?1)",
-            countQuery = "select count(*) from (" +
+                    "where s.subscribed_user_id = ?1",
+            countQuery = "select count(*) from ( " +
                     "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.user_id = u.id " +
-                    "where s.subscribed_user_id = (select id from users where username = ?1)" +
+                    "where s.subscribed_user_id = ?1" +
                     ")")
-    Page<User> findSubscriptions(String username, Pageable pageable);
+    Page<User> findSubscriptions(Integer userId, Pageable pageable);
 
     @Query(nativeQuery = true,
             value = "select exists(select 1 from subscriptions where " +
-                    "subscribed_user_id = (select id from users where username = ?1) " +
+                    "subscribed_user_id = ?1 " +
                     "and " +
-                    "user_id = (select id from users where username = ?2)" +
+                    "user_id = ?2 " +
                     ")")
-    boolean isSubscriber(String subscribedUsername, String username);
+    boolean isSubscriber(Integer subscribedUserId, Integer userId);
 
     @Query(nativeQuery = true,
             value =  "select " +
                     "exists(select 1 from subscriptions where " +
-                    "subscribed_user_id = (select id from users where username = ?1) and " +
-                    "user_id = (select id from users where username = ?2))" +
+                    "subscribed_user_id = ?1 and " +
+                    "user_id = ?2) " +
                     "and " +
                     "exists(select 1 from subscriptions where " +
-                    "subscribed_user_id = (select id from users where username = ?2) and " +
-                    "user_id = (select id from users where username = ?1))")
-    boolean isFriends(String firstUsername, String secondUsername);
+                    "subscribed_user_id = ?2 and " +
+                    "user_id = ?1)")
+    boolean isFriends(Integer firstUserId, Integer secondUserId);
 
     @Query(nativeQuery = true,
             value = "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.subscribed_user_id = u.id " +
-                    "where s.user_id = (select id from users where username = ?1)")
-    List<User> findSubscribers(String username);
+                    "where s.user_id = ?1")
+    List<User> findSubscribers(Integer userId);
 
     @Query(nativeQuery = true,
             value = "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.subscribed_user_id = u.id " +
-                    "where s.user_id = (select id from users where username = ?1)",
+                    "where s.user_id = ?1",
             countQuery = "select (*) from (" +
                     "select * from subscriptions as s " +
                     "join users as u " +
                     "on s.subscribed_user_id = u.id " +
-                    "where s.user_id = (select id from users where username = ?1)" +
+                    "where s.user_id = ?1" +
                     ")")
-    Page<User> findSubscribers(String username, Pageable pageable);
+    Page<User> findSubscribers(Integer userId, Pageable pageable);
 
 
 }

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
-    Optional<Group> findByTitle(String title);
+
     boolean existsByTitle(String title);
 
     @Query(nativeQuery = true,
@@ -26,78 +26,78 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             value = "select * from groups where " +
                     "title like '%' || ?1 || '%'",
             countQuery = "select count(*) (select * from groups where " +
-                    "title like '%' || ?1 || '%'" +
+                    "title like '%' || ?1 || '%' " +
                     ")")
     Page<Group> findGroupsByQuery(String query, Pageable pageable);
 
     @Query(nativeQuery = true,
             value = "select * from groups as g " +
-                    "join groups_users as gu on g.id = gu.group_id " +
-                    "where gu.user_id = (select id from users where username = ?1)")
-    List<Group> findGroupsByUser(String username);
+                    "join users_groups as ug on g.id = ug.group_id " +
+                    "where ug.user_id = ?1")
+    List<Group> findGroupsByUser(Integer id);
 
     @Query(nativeQuery = true,
             value = "select * from groups as g " +
-                    "join groups_users as gu on g.id = gu.group_id " +
-                    "where gu.user_id = (select id from users where username = ?1)",
-            countQuery = "select count(*) from (" +
+                    "join users_groups as ug on g.id = ug.group_id " +
+                    "where ug.user_id = ?1",
+            countQuery = "select count(*) from ( " +
                     "select * from groups as g " +
-                    "join groups_users as gu on g.id = gu.group_id " +
-                    "where gu.user_id = (select id from users where username = ?1)" +
+                    "join users_groups as ug on g.id = ug.group_id " +
+                    "where ug.user_id = ?1 " +
                     ")")
-    Page<Group> findGroupsByUser(String username, Pageable pageable);
+    Page<Group> findGroupsByUser(Integer id, Pageable pageable);
 
     @Query(nativeQuery = true,
             value = "select * from users as u " +
-                    "join groups_users as gu on u.id = gu.user_id " +
-                    "where gu.group_id = (select id from groups where title = ?1)")
-    List<User> findUsersByGroup(String title);
+                    "join users_groups as ug on u.id = ug.user_id " +
+                    "where ug.group_id = ?1")
+    List<User> findUsersByGroup(Integer id);
 
     @Query(nativeQuery = true,
             value = "select * from users as u " +
-                    "join groups_users as gu on u.id = gu.user_id " +
-                    "where gu.group_id = (select id from groups where title = ?1)",
-            countQuery = "select count(*) from (" +
+                    "join users_groups as ug on u.id = ug.user_id " +
+                    "where ug.group_id = ?1",
+            countQuery = "select count(*) from ( " +
                     "select * from users as u " +
-                    "join groups_users as gu on u.id = gu.user_id " +
-                    "where gu.group_id = (select id from groups where title = ?1)" +
+                    "join users_groups as ug on u.id = ug.user_id " +
+                    "where ug.group_id = ?1 " +
                     ")")
-    Page<User> findUsersByGroup(String title, Pageable pageable);
+    Page<User> findUsersByGroup(Integer id, Pageable pageable);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "insert into groups_users(group_id, user_id)" +
-                    "values (" +
-                    "(select id from groups where title = ?1), " +
-                    "(select id from users where username = ?2)" +
-                    ") on conflict do nothing")
-    void subscribe(String title, String username);
+            value = "insert into users_groups(user_id, group_id) " +
+                    "values ( " +
+                    "?1, " +
+                    "?2 " +
+                    ") on conflict(user_id, group_id) do nothing")
+    void subscribe(Integer userId, Integer groupId);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from groups_users" +
-                    "where group_id = (select id from groups where title = ?1)" +
-                    "and user_id = (select id from users where username = ?2)")
-    void unsubscribe(String title, String username);
+            value = "delete from users_groups " +
+                    "where group_id = ?2 " +
+                    "and user_id = ?1 ")
+    void unsubscribe(Integer userId, Integer groupId);
 
     @Query(nativeQuery = true,
             value = "select * from groups where " +
-                    "owner_id = (select id from users where username = ?1)")
-    List<Group> findGroupsByOwner(String username);
+                    "owner_id = ?1 ")
+    List<Group> findGroupsByOwner(Integer userId);
 
     @Query(nativeQuery = true,
             value = "select * from groups where " +
-                    "owner_id = (select id from users where username = ?1)",
-            countQuery = "select count(*) from (" +
+                    "owner_id = ?1",
+            countQuery = "select count(*) from ( " +
                     "select * from groups where " +
-                    "owner_id = (select id from users where username = ?1)" +
+                    "owner_id = ?1 " +
                     ")")
-    Page<Group> findGroupsByOwner(String username, Pageable pageable);
+    Page<Group> findGroupsByOwner(Integer userId, Pageable pageable);
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from groups_users where " +
-                    "group_id = (select id from groups where title = ?1)")
-    void removeGroupsAssociations(String title);
+            value = "delete from users_groups where " +
+                    "group_id = ?1")
+    void removeGroupsAssociations(Integer groupId);
 
 }

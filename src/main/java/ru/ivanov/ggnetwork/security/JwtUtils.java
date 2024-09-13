@@ -32,7 +32,6 @@ public class JwtUtils {
         return JWT.create()
                 .withSubject("User details")
                 .withClaim("id", user.getId())
-                .withClaim("username", user.getUsername())
                 .withClaim("role", user.getRole().name())
                 .withIssuedAt(new Date())
                 .withExpiresAt(experationDate)
@@ -46,10 +45,10 @@ public class JwtUtils {
                 .withIssuer("spring-app-ggnetwork")
                 .build();
         var jwt =  verifier.verify(token);
-        var username = jwt.getClaim("username").asString();
-        var userOptional = userRepository.findByUsername(username);
+        var userId = jwt.getClaim("id").asInt();
+        var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new JWTVerificationException("user with username" + username +" not found");
+            throw new JWTVerificationException("user with id" + userId +" not found");
         var user = userOptional.get();
         if (!user.getId().equals(jwt.getClaim("id").asInt()))
             throw new JWTVerificationException("id is not match");

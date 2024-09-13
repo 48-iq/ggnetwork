@@ -9,37 +9,37 @@ import ru.ivanov.ggnetwork.services.UserImageService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/{username}/images")
+@RequestMapping("/api/users/{userId}/images")
 public class UserImagesController {
     @Autowired
     private UserImageService userImageService;
 
     @GetMapping
-    public ResponseEntity<List<String>> getImagesByUser(@PathVariable String username) {
-        var images = userImageService.getImagesByUser(username);
+    public ResponseEntity<List<Integer>> getImagesByUser(@PathVariable Integer userId) {
+        var images = userImageService.getImagesByUser(userId);
         return ResponseEntity.ok(images);
     }
 
     @PostMapping
-    public ResponseEntity<String> addImage(@PathVariable String username,
+    public ResponseEntity<Integer> addImage(@PathVariable Integer userId,
                                            @ModelAttribute ImageDto imageDto) {
-        var image = userImageService.addImage(username, imageDto.getImage());
+        var image = userImageService.addImage(userId, imageDto.getImage());
         return ResponseEntity.ok(image);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteImage(@PathVariable String username,
-                                            @RequestParam String image) {
+    public ResponseEntity<Void> deleteImage(@PathVariable Integer userId,
+                                            @RequestParam Integer imageId) {
 
-        userImageService.removeImage(username, image);
+        userImageService.removeImage(userId, imageId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/icon")
-    public ResponseEntity<Void> setIcon(@PathVariable String username,
-                                        @RequestParam String image) {
+    public ResponseEntity<Void> setIcon(@PathVariable Integer userId,
+                                        @RequestParam Integer imageId) {
 
-        userImageService.setIcon(username, image);
+        userImageService.setIcon(userId, imageId);
         return ResponseEntity.ok().build();
     }
 }
