@@ -80,6 +80,6 @@ public class AuthController {
         if (SecurityContextHolder.getContext().getAuthentication() == null)
             SecurityContextHolder.getContext().setAuthentication(authToken);
         var jwtToken = jwtUtils.generateToken(savedUser);
-        return ResponseEntity.ok("Bearer " + jwtToken);
+        return ResponseEntity.ok(jwtToken);
     }
 }
