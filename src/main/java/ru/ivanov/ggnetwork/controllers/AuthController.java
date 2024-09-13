@@ -54,7 +54,7 @@ public class AuthController {
         }
         String token = jwtUtils.generateToken(userRepository.findByUsername(loginDto.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found!")));
-        return ResponseEntity.ok("Bearer " + token);
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/register")
