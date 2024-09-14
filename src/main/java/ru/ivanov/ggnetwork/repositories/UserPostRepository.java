@@ -16,18 +16,18 @@ public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
 
     @Query(nativeQuery = true,
             value = "select * from user_posts where " +
-                    "where creator_id = ?1 " +
+                    "creator_id = ?1 " +
                     "order by time")
     List<UserPost> findPostsByUser(Integer userId);
 
 
     @Query(nativeQuery = true,
             value = "select * from user_posts where " +
-                    "where creator_id = ?1 " +
+                    "creator_id = ?1 " +
                     "order by time",
             countQuery = "select count(*) from ( " +
                     "select * from user_posts where " +
-                    "where creator_id = ?1 " +
+                    "creator_id = ?1 " +
                     "order by time " +
                     ")")
     Page<UserPost> findPostsByUser(Integer userId, Pageable pageable);

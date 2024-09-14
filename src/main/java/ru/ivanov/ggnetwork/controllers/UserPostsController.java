@@ -38,8 +38,8 @@ public class UserPostsController {
 
     @GetMapping
     public ResponseEntity<?> findPostsByUser(@PathVariable Integer userId,
-                                             @RequestParam Integer page,
-                                             @RequestParam Integer size) {
+                                             @RequestParam(required = false) Integer page,
+                                             @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page == null)
