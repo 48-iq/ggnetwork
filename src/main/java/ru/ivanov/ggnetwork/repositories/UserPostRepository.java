@@ -20,6 +20,7 @@ public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
                     "order by time")
     List<UserPost> findPostsByUser(Integer userId);
 
+
     @Query(nativeQuery = true,
             value = "select * from user_posts where " +
                     "where creator_id = ?1 " +
@@ -36,6 +37,12 @@ public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
             value = "delete from user_posts where " +
                     "creator_id = ?1")
     void removePostsByUser(Integer userId);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from user_post_grades where " +
+                    "post_id = ?1")
+    void removePostAssociations(Integer postId);
 
 
 

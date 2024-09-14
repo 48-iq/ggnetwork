@@ -1,6 +1,7 @@
 package ru.ivanov.ggnetwork.dto.post;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -10,5 +11,5 @@ import lombok.*;
 public class PostUpdateDto {
     private String title;
     private String content;
-    private String MultipartFile;
+    private MultipartFile image;
 }

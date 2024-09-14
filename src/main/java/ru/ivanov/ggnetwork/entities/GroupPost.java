@@ -22,6 +22,9 @@ public class GroupPost {
     private String title;
     private String content;
     private Integer image;
+    private Integer likes;
+    private Integer dislikes;
+    private boolean isEdited;
     private LocalDateTime time;
     @Column(unique = true)
     private String uuid;

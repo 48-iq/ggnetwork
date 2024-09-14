@@ -21,5 +21,6 @@ public class UserPostGrade {
     @ManyToOne
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private UserPost userPost;
+    @Enumerated(EnumType.STRING)
     private GradeType type;
 }
