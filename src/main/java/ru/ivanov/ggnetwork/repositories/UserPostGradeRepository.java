@@ -18,13 +18,13 @@ public interface UserPostGradeRepository extends JpaRepository<UserPostGrade, In
     @Modifying
     @Query(nativeQuery = true,
             value = "insert into user_post_grades(user_id, post_id, type)" +
-                    "values (?1, ?2, 'LIKE') on conflict update")
+                    "values (?1, ?2, 'LIKE') on conflict(user_id, post_id) update")
     void like(Integer userId, Integer postId);
 
     @Modifying
     @Query(nativeQuery = true,
             value = "insert into user_post_grades(user_id, post_id, type)" +
-                    "values (?1, ?2, 'DISLIKE') on conflict update")
+                    "values (?1, ?2, 'DISLIKE') on conflict(user_id, post_id) update")
     void dislike(Integer userId, Integer postId);
 
 

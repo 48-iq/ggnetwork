@@ -114,6 +114,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     "user_id = ?1")
     void removeUsersUsersAssociations(Integer userId);
 
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from viewed_user_posts " +
+                    "where user_id = ?1; " +
+                    "delete from viewed_user_posts where " +
+                    "id in (select id from posts where creator_id = ?1); " +
+                    "delete from user_post_grades where " +
+                    "user_id = ?1; " +
+                    "delete from posts where " +
+                    "creator_id = ?1;")
+    void removeUsersPostsAssociations(Integer userId);
+
     @Query(nativeQuery = true,
         value = "select * from subscriptions as s1 " +
                 "join subscriptions as s2 on s1.user_id = s2.subscribed_user_id " +

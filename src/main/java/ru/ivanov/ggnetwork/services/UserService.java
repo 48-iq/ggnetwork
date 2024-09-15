@@ -65,10 +65,10 @@ public class UserService {
         if (userOptional.isPresent()) {
             var user = userOptional.get();
             userImageService.removeAllImages(userId);
-            userPostRepository.removePostsByUser(userId);
             userRepository.removeUserGroupsAndUsersGroupsAssociations(user.getId());
             userRepository.removeUsersUsersAssociations(userId);
             userRepository.removeUserGamesAssociations(user.getId());
+            userRepository.removeUsersPostsAssociations(user.getId());
             userRepository.deleteById(user.getId());
         }
     }

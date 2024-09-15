@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user_posts")
@@ -26,4 +27,12 @@ public class UserPost {
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
     private boolean isEdited;
+
+    @ManyToMany
+    @JoinTable(name = "viewed_user_posts",
+            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}),
+            joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private List<User> usersWhoViewedPosts;
+
 }

@@ -6,19 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.ivanov.ggnetwork.dto.post.PostDto;
+import ru.ivanov.ggnetwork.entities.GroupPost;
 import ru.ivanov.ggnetwork.entities.UserPost;
 
 import java.util.List;
 
 @Repository
-public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
-
+public interface GroupPostRepository extends JpaRepository<GroupPost, Integer> {
     @Query(nativeQuery = true,
-            value = "select * from user_posts where " +
+            value = "select * from group_posts where " +
                     "creator_id = ?1 " +
                     "order by time")
-    List<UserPost> findPostsByUser(Integer userId);
+    List<GroupPost> findPostsByGroup(Integer groupId);
 
 
     @Query(nativeQuery = true,
