@@ -12,10 +12,9 @@ import java.util.List;
 @Repository
 public interface UserImageRepository extends JpaRepository<User, Integer> {
     @Query(nativeQuery = true,
-            value = "select * from images as i join users_images as ui " +
-                    "on i.id = ui.image_id " +
-                    "where ui.user_id = ?1")
-    List<Image> findImagesByUser(Integer userId);
+            value = "select image_id from users_images " +
+                    "where user_id = ?1")
+    List<Integer> findImagesByUser(Integer userId);
 
     @Modifying
     @Query(nativeQuery = true,

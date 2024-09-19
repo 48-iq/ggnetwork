@@ -1,5 +1,6 @@
 package ru.ivanov.ggnetwork.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class UserImagesController {
 
     @PostMapping
     public ResponseEntity<Integer> addImage(@PathVariable Integer userId,
-                                           @ModelAttribute ImageDto imageDto) {
+                                           @ModelAttribute @Valid ImageDto imageDto) {
         var image = userImageService.addImage(userId, imageDto.getImage());
         return ResponseEntity.ok(image);
     }

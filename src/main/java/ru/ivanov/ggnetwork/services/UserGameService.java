@@ -15,7 +15,7 @@ import ru.ivanov.ggnetwork.repositories.UserRepository;
 import java.util.List;
 
 @Service
-public class UserGamesService {
+public class UserGameService {
     @Autowired
     private UserRepository userRepository;
     @Autowired

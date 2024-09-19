@@ -1,10 +1,7 @@
 package ru.ivanov.ggnetwork.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class GroupPost {
 
     @Id
@@ -27,8 +25,6 @@ public class GroupPost {
     private Integer dislikes;
     private boolean isEdited;
     private LocalDateTime time;
-    @Column(unique = true)
-    private String uuid;
     @ManyToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private Group creator;

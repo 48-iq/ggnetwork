@@ -21,7 +21,7 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Integer> {
 
 
     @Query(nativeQuery = true,
-            value = "select * from user_posts where " +
+            value = "select * from group_posts where " +
                     "creator_id = ?1 " +
                     "order by time",
             countQuery = "select count(*) from ( " +
@@ -29,12 +29,12 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Integer> {
                     "creator_id = ?1 " +
                     "order by time " +
                     ")")
-    Page<UserPost> findPostsByUser(Integer userId, Pageable pageable);
+    Page<GroupPost> findPostsByGroup(Integer groupId, Pageable pageable);
 
 
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from user_post_grades where " +
+            value = "delete from group_post_grades where " +
                     "post_id = ?1; " +
                     "delete from viewed_user_posts where post_id = ?1;")
     void removePostAssociations(Integer postId);

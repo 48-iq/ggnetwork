@@ -28,8 +28,7 @@ public class UserImageService {
     public List<Integer> getImagesByUser(Integer userId) {
         if (!userRepository.existsById(userId))
             throw new EntityNotFoundException("user with username " + userId + " not found");
-        return userImageRepository.findImagesByUser(userId)
-                .stream().map(Image::getId).toList();
+        return  userImageRepository.findImagesByUser(userId);
     }
 
     @Transactional

@@ -3,16 +3,13 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ivanov.ggnetwork.dto.game.GameDto;
-import ru.ivanov.ggnetwork.services.UserGamesService;
-
-import java.util.List;
+import ru.ivanov.ggnetwork.services.UserGameService;
 
 @RestController
 @RequestMapping("/api/users/{userId}/games")
 public class UserGamesController {
     @Autowired
-    private UserGamesService userGamesService;
+    private UserGameService userGamesService;
 
     @PostMapping("/plays")
     public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable Integer userId,
