@@ -23,7 +23,7 @@ public class PostDto {
     private Integer image;
     private String content;
     private String type;
-    private String creator;
+    private Integer creator;
     private String date;
     private Integer likes;
     private Integer dislikes;
@@ -39,7 +39,7 @@ public class PostDto {
                 .content(post.getContent())
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
-                .creator(post.getCreator().getUsername())
+                .creator(post.getCreator().getId())
                 .date(formatter.format(post.getTime()))
                 .type(USER_POST)
                 .build();
@@ -54,9 +54,9 @@ public class PostDto {
                 .content(post.getContent())
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
-                .creator(post.getCreator().getTitle())
+                .creator(post.getId())
                 .date(formatter.format(post.getTime()))
-                .type(USER_POST)
+                .type(GROUP_POST)
                 .build();
     }
 }

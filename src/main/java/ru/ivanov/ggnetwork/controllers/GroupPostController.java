@@ -31,5 +31,17 @@ public class GroupPostController {
         return ResponseEntity.ok(post);
     }
 
+    @GetMapping
+    public ResponseEntity<?> findPosts(@RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) Integer size,
+                                       @PathVariable Integer groupId) {
+        if ((page != null && size == null) || (page == null && size != null))
+            return ResponseEntity.badRequest().body("param page must be declared with param size");
+        if (page != null) {
+            return ResponseEntity.ok(groupPostService.getPostsByGroup(groupId, page, size));
+        } else {
+            return ResponseEntity.ok(groupPostService.getPostsByGroup(groupId));
+        }
+    }
 
 }

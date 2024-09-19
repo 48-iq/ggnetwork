@@ -65,7 +65,7 @@ public class GroupPostService {
         );
     }
 
-    public List<PostDto> getPostByGroup(Integer groupId) {
+    public List<PostDto> getPostsByGroup(Integer groupId) {
         return groupPostRepository.findPostsByGroup(groupId)
                 .stream().map(PostDto::from).toList();
     }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.entities.User;
 
 import java.util.List;
@@ -222,6 +223,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     "where s.user_id = ?1" +
                     ")")
     Page<User> findSubscribers(Integer userId, Pageable pageable);
+
+
+
+
 
 
 }
