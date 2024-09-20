@@ -102,6 +102,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     "delete from users_groups " +
                     "where group_id in (select id from groups " +
                     "where owner_id = ?1); " +
+                    "delete from viewed_group_posts where " +
+                    "post_id in (select gp.id from group_posts as gp join groups as g on gp.creator_id = g.id " +
+                    "where g.id in (select id from groups where creator_id = ?1)); " +
+                    "delete from group_post_grades where " +
+                    "post_id in (select gp.id from group_posts as gp join groups as g on gp.creator_id = g.id " +
+                    "where g.id in (select id from groups where creator_id = ?1)); " +
                     "delete from groups " +
                     "where id in (select id from groups " +
                     "where owner_id = ?1)")
@@ -120,11 +126,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             value = "delete from viewed_user_posts " +
                     "where user_id = ?1; " +
                     "delete from viewed_user_posts where " +
-                    "id in (select id from posts where creator_id = ?1); " +
+                    "post_id in (select id from user_posts where creator_id = ?1); " +
                     "delete from user_post_grades where " +
                     "user_id = ?1; " +
-                    "delete from posts where " +
-                    "creator_id = ?1;")
+                    "delete from user_post_grades where " +
+                    "post_id in (select id from user_posts where creator_id = ?1); " +
+                    "delete from user_posts where " +
+                    "creator_id = ?1; " +
+                    "delete from viewed_group_posts " +
+                    "where user_id = ?1; " +
+                    "delete from group_post_grades where " +
+                    "user_id = ?1 "
+                    )
     void removeUsersPostsAssociations(Integer userId);
 
     @Query(nativeQuery = true,

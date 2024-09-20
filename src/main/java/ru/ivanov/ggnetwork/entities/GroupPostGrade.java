@@ -16,8 +16,8 @@ public class GroupPostGrade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "group_id", referencedColumnName = "id")
-    private Group user;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     @ManyToOne
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private GroupPost groupPost;
