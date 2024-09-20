@@ -92,7 +92,7 @@ public class GroupService {
             var group = groupOptional.get();
             if (group.getIcon() != null)
                 imageService.delete(group.getIcon());
-            groupRepository.removeGroupsAssociations(group.getId());
+            groupRepository.removeUsersAssociations(group.getId());
             groupRepository.deleteById(group.getId());
         }
     }

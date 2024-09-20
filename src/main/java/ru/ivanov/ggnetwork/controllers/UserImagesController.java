@@ -36,11 +36,4 @@ public class UserImagesController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/icon")
-    public ResponseEntity<Void> setIcon(@PathVariable Integer userId,
-                                        @RequestParam Integer imageId) {
-
-        userImageService.setIcon(userId, imageId);
-        return ResponseEntity.ok().build();
-    }
 }

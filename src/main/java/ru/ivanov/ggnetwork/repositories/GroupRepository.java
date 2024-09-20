@@ -10,7 +10,6 @@ import ru.ivanov.ggnetwork.entities.Group;
 import ru.ivanov.ggnetwork.entities.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
@@ -98,6 +97,14 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query(nativeQuery = true,
             value = "delete from users_groups where " +
                     "group_id = ?1")
-    void removeGroupsAssociations(Integer groupId);
+    void removeUsersAssociations(Integer groupId);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from viewed_group_posts where " +
+                    "post_id in (select id from posts where creator_id = ?1) ;" +
+                    "delete ")
+    void removePostsAssociations(Integer groupId);
+
 
 }

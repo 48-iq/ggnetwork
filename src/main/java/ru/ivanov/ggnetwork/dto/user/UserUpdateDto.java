@@ -13,4 +13,5 @@ public class UserUpdateDto {
     private String surname;
     private String email;
     private String status;
+    private Integer icon;
 }

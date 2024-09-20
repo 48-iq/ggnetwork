@@ -64,15 +64,4 @@ public class UserImageService {
         }
     }
 
-    @Transactional
-    public void setIcon(Integer userId, Integer imageId) {
-        var userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty())
-            throw  new EntityNotFoundException("user with username " + userId + " not found");
-        var imageOptional = imageRepository.findById(imageId);
-        if (imageOptional.isEmpty() || !userImageRepository.checkOnBelong(userId, imageId))
-            throw new EntityNotFoundException("image with id " + imageId + " not found or not belong you");
-        var user = userOptional.get();
-        user.setIcon(imageId);
-    }
 }
