@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.group.GroupCreateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
 import ru.ivanov.ggnetwork.services.UsersGroupsService;
@@ -18,7 +19,7 @@ public class UserGroupsController {
     private UsersGroupsService usersGroupsService;
 
     @PostMapping
-    public ResponseEntity<?> createGroup(@ModelAttribute @Valid GroupCreateDto groupCreateDto,
+    public ResponseEntity<?> createGroup(@ModelAttribute @UseValidator GroupCreateDto groupCreateDto,
                                          @PathVariable Integer userId) {
         var group = groupService.createGroup(groupCreateDto, userId);
         usersGroupsService.subscribe(userId, group.getId());

@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.auth.LoginDto;
 import ru.ivanov.ggnetwork.dto.auth.RegisterDto;
 import ru.ivanov.ggnetwork.entities.Role;
@@ -59,7 +60,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterDto registerDto) {
+    public ResponseEntity<String> register(@RequestBody @UseValidator RegisterDto registerDto) {
         if (registerDto.getRole().equals("ROLE_ADMIN") &&
                 !adminPassword.equals(registerDto.getAdminPassword()))
             return ResponseEntity.badRequest().body("incorrect admin password");

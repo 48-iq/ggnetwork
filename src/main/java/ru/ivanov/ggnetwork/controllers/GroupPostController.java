@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.post.PostCreateDto;
 import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.dto.post.PostUpdateDto;
@@ -16,7 +17,7 @@ public class GroupPostController {
     private GroupPostService groupPostService;
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@ModelAttribute PostCreateDto postCreateDto,
+    public ResponseEntity<PostDto> createPost(@ModelAttribute @UseValidator PostCreateDto postCreateDto,
                                              @PathVariable Integer groupId) {
 
         var post = groupPostService.createPost(groupId, postCreateDto);
@@ -24,7 +25,7 @@ public class GroupPostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostDto> updatePost(@ModelAttribute PostUpdateDto postUpdateDto,
+    public ResponseEntity<PostDto> updatePost(@ModelAttribute @UseValidator PostUpdateDto postUpdateDto,
                                               @PathVariable Integer groupId,
                                               @PathVariable Integer postId) {
         var post = groupPostService.updatePost(postId, postUpdateDto);

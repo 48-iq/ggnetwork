@@ -52,6 +52,7 @@ public class GameService {
         if (gameDto.getIcon() != null) {
             imageService.update(gameDto.getIcon(), game.getIcon());
         }
+        game.setTitle(gameDto.getTitle());
         game.setDescription(gameDto.getDescription());
         gameRepository.save(game);
         return GameDto.from(game);

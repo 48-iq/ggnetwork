@@ -93,6 +93,7 @@ public class GroupService {
             if (group.getIcon() != null)
                 imageService.delete(group.getIcon());
             groupRepository.removeUsersAssociations(group.getId());
+            groupRepository.removePostsAssociations(group.getId());
             groupRepository.deleteById(group.getId());
         }
     }

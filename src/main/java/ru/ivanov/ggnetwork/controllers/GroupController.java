@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.group.GroupDto;
 import ru.ivanov.ggnetwork.dto.group.GroupUpdateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
@@ -42,7 +43,7 @@ public class GroupController {
 
     @PutMapping("/{groupId}")
     public ResponseEntity<?> updateGroup(@PathVariable Integer groupId,
-                                         @ModelAttribute GroupUpdateDto groupUpdateDto) {
+                                         @ModelAttribute @UseValidator GroupUpdateDto groupUpdateDto) {
         return ResponseEntity.ok(groupService.updateGroup(groupId, groupUpdateDto));
     }
 

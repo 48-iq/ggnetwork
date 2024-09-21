@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.post.PostCreateDto;
 import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.dto.post.PostUpdateDto;
@@ -18,14 +19,14 @@ public class UserPostsController {
 
     @PostMapping
     public ResponseEntity<PostDto> createPost(@PathVariable Integer userId,
-                                             @ModelAttribute PostCreateDto postCreateDto) {
+                                             @ModelAttribute @UseValidator PostCreateDto postCreateDto) {
         var post = userPostService.createPost(userId, postCreateDto);
         return ResponseEntity.ok(post);
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePost(@PathVariable Integer postId,
-                                              @ModelAttribute PostUpdateDto postUpdateDto) {
+                                              @ModelAttribute @UseValidator PostUpdateDto postUpdateDto) {
         var post = userPostService.updatePost(postId, postUpdateDto);
         return ResponseEntity.ok(post);
     }

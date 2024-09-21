@@ -3,6 +3,7 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.game.GameCreateDto;
 import ru.ivanov.ggnetwork.dto.game.GameDto;
 import ru.ivanov.ggnetwork.dto.game.GameUpdateDto;
@@ -21,13 +22,13 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<GameDto> createGame(@ModelAttribute GameCreateDto gameDto) {
+    public ResponseEntity<GameDto> createGame(@ModelAttribute @UseValidator GameCreateDto gameDto) {
         var game = gameService.createGame(gameDto);
         return ResponseEntity.ok(game);
     }
 
     @PutMapping("/{gameId}")
-    public ResponseEntity<GameDto> updateGame(@ModelAttribute GameUpdateDto gameDto,
+    public ResponseEntity<GameDto> updateGame(@ModelAttribute @UseValidator GameUpdateDto gameDto,
                                               @PathVariable Integer gameId) {
         var game = gameService.updateGame(gameId, gameDto);
         return ResponseEntity.ok(game);

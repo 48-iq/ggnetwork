@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
 import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
@@ -30,7 +31,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Integer userId,
-                                              @RequestBody UserUpdateDto userUpdateDto) {
+                                              @RequestBody @UseValidator UserUpdateDto userUpdateDto) {
 
         var user = userService.updateUser(userId, userUpdateDto);
         return ResponseEntity.ok(user);
