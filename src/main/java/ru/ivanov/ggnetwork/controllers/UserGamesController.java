@@ -3,6 +3,9 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.services.UserGameService;
 
 @RestController
@@ -11,42 +14,44 @@ public class UserGamesController {
     @Autowired
     private UserGameService userGamesService;
 
-    @PostMapping("/plays")
-    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable Integer userId,
-                                        @RequestParam Integer gameId) {
-
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/plays/{gameId}")
+    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable @EntityId Integer userId,
+                                                      @PathVariable Integer gameId) {
         userGamesService.addGameToUserPlays(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/played")
-    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable Integer userId,
-                                                @RequestParam Integer gameId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/played/{gameId}")
+    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable @EntityId Integer userId,
+                                                       @PathVariable Integer gameId) {
 
         userGamesService.addGameToUserHasPlayed(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/plays")
-    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable Integer userId,
-                                                    @RequestParam Integer gameId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @DeleteMapping("/plays/{gameId}")
+    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable @EntityId Integer userId,
+                                                    @PathVariable Integer gameId) {
 
         userGamesService.removeGameFromUserPlays(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/played")
-    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable Integer userId,
-                                                    @RequestParam Integer gameId) {
-
+    @AuthorizedBy(UserAuthorizer.class)
+    @DeleteMapping("/played/{gameId}")
+    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable @EntityId Integer userId,
+                                                        @PathVariable Integer gameId) {
         userGamesService.removeGameFromUserHasPlayed(userId, gameId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/plays")
     public ResponseEntity<?> getGamesUserPlays(@PathVariable Integer userId,
-                                                           @RequestParam(required = false) Integer page,
-                                                           @RequestParam(required = false) Integer size) {
+                                               @RequestParam(required = false) Integer page,
+                                               @RequestParam(required = false) Integer size) {
         if ((page != null && size == null) || (page == null && size != null))
             return ResponseEntity.badRequest().body("param page must be declared with param size");
         if (page == null)

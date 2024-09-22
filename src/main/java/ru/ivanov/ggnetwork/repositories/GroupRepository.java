@@ -108,5 +108,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
                     "delete from group_posts where creator_id = ?1")
     void removePostsAssociations(Integer groupId);
 
+    @Query(nativeQuery = true,
+            value = "select exists(" +
+                    "select 1 from groups where owner_id = ?1 and id = ?2" +
+                    ")")
+    boolean checkOnBelong(Integer userId, Integer groupId);
+
 
 }

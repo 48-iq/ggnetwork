@@ -3,7 +3,11 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
+import ru.ivanov.ggnetwork.authorization.UserPostAuthorizer;
 import ru.ivanov.ggnetwork.dto.post.PostCreateDto;
 import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.dto.post.PostUpdateDto;
@@ -12,27 +16,30 @@ import ru.ivanov.ggnetwork.services.UserPostService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/{userId}/posts")
+@RequestMapping("/api/user-posts")
 public class UserPostsController {
     @Autowired
     private UserPostService userPostService;
 
-    @PostMapping
-    public ResponseEntity<PostDto> createPost(@PathVariable Integer userId,
-                                             @ModelAttribute @UseValidator PostCreateDto postCreateDto) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/{userId}")
+    public ResponseEntity<PostDto> createPost(@PathVariable @EntityId Integer userId,
+                                              @ModelAttribute @UseValidator PostCreateDto postCreateDto) {
         var post = userPostService.createPost(userId, postCreateDto);
         return ResponseEntity.ok(post);
     }
 
+    @AuthorizedBy(UserPostAuthorizer.class)
     @PutMapping("/{postId}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Integer postId,
+    public ResponseEntity<PostDto> updatePost(@PathVariable @EntityId Integer postId,
                                               @ModelAttribute @UseValidator PostUpdateDto postUpdateDto) {
         var post = userPostService.updatePost(postId, postUpdateDto);
         return ResponseEntity.ok(post);
     }
 
+    @AuthorizedBy(UserPostAuthorizer.class)
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<Void> deletePost(@PathVariable @EntityId Integer postId) {
         userPostService.deletePost(postId);
         return ResponseEntity.ok().build();
     }

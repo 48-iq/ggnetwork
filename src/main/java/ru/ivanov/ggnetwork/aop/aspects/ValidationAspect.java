@@ -10,16 +10,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.aop.annotations.ValidatedBy;
 import ru.ivanov.ggnetwork.exceptions.ExpectedAnnotationException;
-
-import java.lang.reflect.Executable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Aspect
 @Component
@@ -36,7 +30,7 @@ public class ValidationAspect {
     }
 
     @Around("controllerLayer()")
-    public Object processValidation(ProceedingJoinPoint pjp) throws Throwable {
+    public Object validationProcess(ProceedingJoinPoint pjp) throws Throwable {
         var methodSignature = (MethodSignature) pjp.getStaticPart().getSignature();
         var method = methodSignature.getMethod();
         var args = pjp.getArgs();

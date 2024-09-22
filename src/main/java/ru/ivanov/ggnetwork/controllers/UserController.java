@@ -5,7 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
 import ru.ivanov.ggnetwork.dto.user.UserInfoDto;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
@@ -30,7 +33,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Integer userId,
+    @AuthorizedBy(UserAuthorizer.class)
+    public ResponseEntity<UserDto> updateUser(@PathVariable @EntityId Integer userId,
                                               @RequestBody @UseValidator UserUpdateDto userUpdateDto) {
 
         var user = userService.updateUser(userId, userUpdateDto);
@@ -38,7 +42,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer userId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    public ResponseEntity<Void> deleteUser(@PathVariable @EntityId Integer userId) {
         System.out.println();
         userService.deleteUser(userId);
         return ResponseEntity.ok().build();

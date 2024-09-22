@@ -4,13 +4,16 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.dto.group.GroupCreateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
 import ru.ivanov.ggnetwork.services.UsersGroupsService;
 
 @RestController
-@RequestMapping("/api/users/{userId}/groups")
+@RequestMapping("/api/users/{userId}")
 public class UserGroupsController {
 
     @Autowired
@@ -18,29 +21,24 @@ public class UserGroupsController {
     @Autowired
     private UsersGroupsService usersGroupsService;
 
-    @PostMapping
-    public ResponseEntity<?> createGroup(@ModelAttribute @UseValidator GroupCreateDto groupCreateDto,
-                                         @PathVariable Integer userId) {
-        var group = groupService.createGroup(groupCreateDto, userId);
-        usersGroupsService.subscribe(userId, group.getId());
-        return ResponseEntity.ok(group);
-    }
 
-    @PostMapping("/subscribe")
-    public ResponseEntity<?> subscribe(@RequestParam Integer groupId,
-                                       @PathVariable Integer userId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/subscribe-to-group/{groupId}")
+    public ResponseEntity<?> subscribe(@PathVariable Integer groupId,
+                                       @PathVariable @EntityId Integer userId) {
         usersGroupsService.subscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/unsubscribe")
-    public ResponseEntity<?> unsubscribe(@RequestParam Integer groupId,
-                                         @PathVariable Integer userId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/unsubscribe-from-group/{groupId}")
+    public ResponseEntity<?> unsubscribe(@PathVariable Integer groupId,
+                                         @PathVariable @EntityId Integer userId) {
         usersGroupsService.unsubscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping("/groups")
     public ResponseEntity<?> getGroups(@PathVariable Integer userId,
                                         @RequestParam(required = false) Integer page,
                                         @RequestParam(required = false) Integer size) {
@@ -51,7 +49,8 @@ public class UserGroupsController {
         else
             return ResponseEntity.ok(usersGroupsService.findGroupsByUser(userId));
     }
-    @GetMapping("/owned")
+
+    @GetMapping("/groups-owned")
     public ResponseEntity<?> getGroupsByOwner(@PathVariable Integer userId,
                                         @RequestParam(required = false) Integer page,
                                         @RequestParam(required = false) Integer size) {

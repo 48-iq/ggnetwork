@@ -32,6 +32,11 @@ public interface UserPostRepository extends JpaRepository<UserPost, Integer> {
                     ")")
     Page<UserPost> findPostsByUser(Integer userId, Pageable pageable);
 
+    @Query(nativeQuery = true,
+            value = "select exists(" +
+                    "select 1 from creator_id = ?1 and id = ?2" +
+                    ")")
+    boolean checkOnBelong(Integer userId, Integer postId);
 
     @Modifying
     @Query(nativeQuery = true,

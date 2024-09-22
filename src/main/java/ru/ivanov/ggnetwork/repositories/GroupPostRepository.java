@@ -31,6 +31,13 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Integer> {
                     ")")
     Page<GroupPost> findPostsByGroup(Integer groupId, Pageable pageable);
 
+    @Query(nativeQuery = true,
+            value = "select exists(" +
+                    "select 1 from group_posts as gp join groups as p " +
+                    "on gp.creator_id = p.id " +
+                    "where p.owner_id = ?1 and gp.id = ?2 " +
+                    ")")
+    boolean checkOnBelong(Integer userId, Integer postId);
 
     @Modifying
     @Query(nativeQuery = true,

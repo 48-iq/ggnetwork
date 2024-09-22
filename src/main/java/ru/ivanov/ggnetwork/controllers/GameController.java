@@ -2,6 +2,7 @@ package ru.ivanov.ggnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.dto.game.GameCreateDto;
@@ -21,12 +22,14 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<GameDto> createGame(@ModelAttribute @UseValidator GameCreateDto gameDto) {
         var game = gameService.createGame(gameDto);
         return ResponseEntity.ok(game);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{gameId}")
     public ResponseEntity<GameDto> updateGame(@ModelAttribute @UseValidator GameUpdateDto gameDto,
                                               @PathVariable Integer gameId) {
@@ -34,6 +37,7 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{gameId}")
     public ResponseEntity<Void> deleteGame(@PathVariable Integer gameId) {
         gameService.deleteGame(gameId);

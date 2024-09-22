@@ -30,7 +30,7 @@ public class RegisterDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var registerDto = (RegisterDto) target;
         if (registerDto == null) {
-            errors.reject("register dto is null");
+            errors.reject("registerDto", "register dto is null");
             return;
         }
         boolean roleIsValid = false;

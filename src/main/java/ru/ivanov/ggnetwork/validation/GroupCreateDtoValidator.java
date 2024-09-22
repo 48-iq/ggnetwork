@@ -23,7 +23,7 @@ public class GroupCreateDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var groupCreateDto = (GroupCreateDto) target;
         if (groupCreateDto == null) {
-            errors.reject("group create dto is null");
+            errors.reject("groupCreateDto","group create dto is null");
             return;
         }
         if (groupCreateDto.getIcon() != null) {

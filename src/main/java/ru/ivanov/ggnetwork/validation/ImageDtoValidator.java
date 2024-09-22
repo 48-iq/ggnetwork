@@ -16,7 +16,7 @@ public class ImageDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var imageDto = (ImageDto) target;
         if (imageDto == null) {
-            errors.reject("image dto is null");
+            errors.reject("imageDto","image dto is null");
             return;
         }
         if (imageDto.getImage() == null)

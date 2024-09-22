@@ -18,7 +18,7 @@ public class PostCreateDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var postCreateDto = (PostCreateDto) target;
         if (postCreateDto == null) {
-            errors.reject("post create dto is null");
+            errors.reject("postCreateDto","post create dto is null");
             return;
         }
         if (postCreateDto.getImage() != null) {

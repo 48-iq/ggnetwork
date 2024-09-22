@@ -3,16 +3,34 @@ package ru.ivanov.ggnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
+import ru.ivanov.ggnetwork.authorization.GroupAuthorizer;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
+import ru.ivanov.ggnetwork.dto.group.GroupCreateDto;
 import ru.ivanov.ggnetwork.dto.group.GroupDto;
 import ru.ivanov.ggnetwork.dto.group.GroupUpdateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
+import ru.ivanov.ggnetwork.services.UsersGroupsService;
 
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private UsersGroupsService usersGroupsService;
+
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> createGroup(@ModelAttribute @UseValidator GroupCreateDto groupCreateDto,
+                                         @PathVariable @EntityId Integer userId) {
+        var group = groupService.createGroup(groupCreateDto, userId);
+        usersGroupsService.subscribe(userId, group.getId());
+        return ResponseEntity.ok(group);
+    }
 
     @GetMapping("/{groupId}")
     public ResponseEntity<GroupDto> findGroupByTitle(@PathVariable Integer groupId) {
@@ -41,14 +59,16 @@ public class GroupController {
         }
     }
 
+    @AuthorizedBy(GroupAuthorizer.class)
     @PutMapping("/{groupId}")
-    public ResponseEntity<?> updateGroup(@PathVariable Integer groupId,
+    public ResponseEntity<?> updateGroup(@PathVariable @EntityId Integer groupId,
                                          @ModelAttribute @UseValidator GroupUpdateDto groupUpdateDto) {
         return ResponseEntity.ok(groupService.updateGroup(groupId, groupUpdateDto));
     }
 
+    @AuthorizedBy(GroupAuthorizer.class)
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<?> deleteGroup(@PathVariable Integer groupId) {
+    public ResponseEntity<?> deleteGroup(@PathVariable @EntityId Integer groupId) {
         groupService.deleteGroup(groupId);
         return ResponseEntity.ok().build();
     }

@@ -1,12 +1,16 @@
 package ru.ivanov.ggnetwork.controllers;
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
+import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.services.RelationsService;
 
 @RestController
-@RequestMapping("/api/users/{userId}/relations")
+@RequestMapping("/api/users/{userId}")
 public class RelationsController {
     @Autowired
     private RelationsService relationsService;
@@ -24,16 +28,17 @@ public class RelationsController {
             return ResponseEntity.ok(relationsService.findFriends(userId));
     }
 
-    @PostMapping("/subscribe")
-    public ResponseEntity<?> subscribe(@PathVariable Integer userId,
-                                       @RequestParam Integer subscriptionUserId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/subscribe-to-user/{subscriptionUserId}")
+    public ResponseEntity<?> subscribe(@PathVariable @EntityId Integer userId,
+                                       @PathVariable Integer subscriptionUserId) {
         relationsService.subscribe(userId, subscriptionUserId);
         return ResponseEntity.ok().build();
     }
-
-    @PostMapping("/unsubscribe")
-    public ResponseEntity<?> unsubscribe(@PathVariable Integer userId,
-                                       @RequestParam Integer subscriptionUserId) {
+    @AuthorizedBy(UserAuthorizer.class)
+    @PostMapping("/unsubscribe-from-user/{subscriptionUserId}")
+    public ResponseEntity<?> unsubscribe(@PathVariable @EntityId Integer userId,
+                                         @RequestParam Integer subscriptionUserId) {
         relationsService.unsubscribe(userId, subscriptionUserId);
         return ResponseEntity.ok().build();
     }
@@ -64,15 +69,15 @@ public class RelationsController {
             return ResponseEntity.ok(relationsService.findSubscribers(userId));
     }
 
-    @GetMapping("/check/subscription")
+    @GetMapping("/check/subscription/{subscriptionUserId}")
     public ResponseEntity<?> checkSubscribe(@PathVariable Integer userId,
-                                            @RequestParam Integer subscriptionUserId) {
+                                            @PathVariable Integer subscriptionUserId) {
         return ResponseEntity.ok(relationsService.isSubscriber(userId, subscriptionUserId));
     }
 
-    @GetMapping("/check/friend")
+    @GetMapping("/check/friend/{friendUserId}")
     public ResponseEntity<?> checkFriend(@PathVariable Integer userId,
-                                         @RequestParam Integer friendUserId) {
+                                         @PathVariable Integer friendUserId) {
         return ResponseEntity.ok(relationsService.isFriends(userId, friendUserId));
     }
 

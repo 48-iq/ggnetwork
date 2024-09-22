@@ -19,7 +19,7 @@ public class PostUpdateDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var postUpdateDto = (PostUpdateDto) target;
         if (postUpdateDto == null) {
-            errors.reject("post update dto is null");
+            errors.reject("postUpdateDto","post update dto is null");
             return;
         }
         if (postUpdateDto.getImage() != null) {

@@ -24,7 +24,7 @@ public class GroupUpdateDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var groupUpdateDto = (GroupUpdateDto) target;
         if (groupUpdateDto == null) {
-            errors.reject("group update dto is null");
+            errors.reject("groupUpdateDto", "group update dto is null");
             return;
         }
         if (groupUpdateDto.getIcon() != null) {

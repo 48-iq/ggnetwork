@@ -55,9 +55,6 @@ public class UserService {
         user.setSurname(userUpdateDto.getSurname());
         user.setEmail(userUpdateDto.getEmail());
         user.setStatus(userUpdateDto.getStatus());
-        if (user.getImages().stream().noneMatch(i -> i.getId().equals(userUpdateDto.getIcon())))
-            throw new EntityNotFoundException("image with id " + userUpdateDto.getIcon()
-                    + " not found in user with id " + userId);
         user.setIcon(userUpdateDto.getIcon());
         var updatedUser = userRepository.save(user);
         return UserDto.from(updatedUser);

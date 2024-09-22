@@ -1,12 +1,9 @@
 package ru.ivanov.ggnetwork.validation;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.ivanov.ggnetwork.dto.user.UserUpdateDto;
-import ru.ivanov.ggnetwork.repositories.UserImageRepository;
-import ru.ivanov.ggnetwork.repositories.UserRepository;
 
 import java.util.regex.Pattern;
 
@@ -22,7 +19,7 @@ public class UserUpdateDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         var userUpdateDto = (UserUpdateDto) target;
         if (userUpdateDto == null) {
-            errors.reject("register dto is null");
+            errors.reject("userUpdateDto", "user update dto is null");
             return;
         }
         var namePattern = Pattern.compile("^.{3,64}$");
