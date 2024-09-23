@@ -68,7 +68,7 @@ public class RegisterDtoValidator implements Validator {
                 errors.reject("surname", "surname is invalid");
         }
         if (registerDto.getEmail() != null) {
-            var pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");
+            var pattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
             var matcher = pattern.matcher(registerDto.getEmail());
             if (!matcher.matches())
                 errors.reject("email", "email is invalid");
