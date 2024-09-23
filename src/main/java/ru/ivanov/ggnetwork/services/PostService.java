@@ -3,15 +3,15 @@ package ru.ivanov.ggnetwork.services;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import ru.ivanov.ggnetwork.dto.post.PostDto;
-import ru.ivanov.ggnetwork.repositories.UserRepository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -31,7 +31,23 @@ public class PostService {
                 "\tleft join viewed_user_posts as vup on up.id = vup.post_id\n" +
                 "\twhere up.creator_id in (select user_id from subscriptions where subscribed_user_id = ?)\n" +
                 "\tand vup.post_id is null\n" +
-                ") order by time, id limit ?", new Object[]{userId, userId, count}, new BeanPropertyRowMapper<>(PostDto.class) {
+                ") order by time, id limit ?", new Object[]{userId, userId, count}, new RowMapper<PostDto>() {
+            @Override
+            public PostDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm:ss");
+                return PostDto.builder()
+                        .id(rs.getInt("id"))
+                        .image(rs.getInt("image"))
+                        .title(rs.getString("title"))
+                        .likes(rs.getInt("likes"))
+                        .dislikes(rs.getInt("dislikes"))
+                        .content(rs.getString("content"))
+                        .creator(rs.getInt("creator"))
+                        .isEdited(rs.getBoolean("is_edited"))
+                        .type(rs.getString("type"))
+                        .time(formatter.format(rs.getDate("time").toInstant()))
+                        .build();
+            }
         });
         var userPosts = posts.stream().filter(postDto -> postDto.getType().equals(PostDto.USER_POST)).toList();
         var groupPosts = posts.stream().filter(postDto -> postDto.getType().equals(PostDto.GROUP_POST)).toList();

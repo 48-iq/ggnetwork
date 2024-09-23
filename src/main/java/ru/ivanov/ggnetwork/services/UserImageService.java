@@ -48,8 +48,8 @@ public class UserImageService {
         var user = userOptional.get();
         if (imageId.equals(user.getIcon()))
             user.setIcon(null);
-        imageService.delete(imageId);
         userImageRepository.removeUserImageAssociation(userId, imageId);
+        imageService.delete(imageId);
     }
 
     @Transactional

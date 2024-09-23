@@ -24,7 +24,7 @@ public class PostDto {
     private String content;
     private String type;
     private Integer creator;
-    private String date;
+    private String time;
     private Integer likes;
     private Integer dislikes;
     private String grade;
@@ -40,7 +40,7 @@ public class PostDto {
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
                 .creator(post.getCreator().getId())
-                .date(formatter.format(post.getTime()))
+                .time(formatter.format(post.getTime()))
                 .type(USER_POST)
                 .build();
     }
@@ -55,7 +55,7 @@ public class PostDto {
                 .likes(post.getLikes())
                 .dislikes(post.getDislikes())
                 .creator(post.getId())
-                .date(formatter.format(post.getTime()))
+                .time(formatter.format(post.getTime()))
                 .type(GROUP_POST)
                 .build();
     }
