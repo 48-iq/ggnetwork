@@ -24,11 +24,13 @@ public class PostDto {
     private String content;
     private String type;
     private Integer creator;
+    //private Integer icon  icon: 1
+    //private String name   name: "ivanov ilya" / "game groups"
+    private String grade;
+    private boolean isEdited;
     private String time;
     private Integer likes;
     private Integer dislikes;
-    private String grade;
-    private boolean isEdited;
 
     public static PostDto from(UserPost post) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm:ss");

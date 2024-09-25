@@ -2,11 +2,10 @@ package ru.ivanov.ggnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.dto.user.UserDto;
@@ -34,7 +33,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @AuthorizedBy(UserAuthorizer.class)
-    public ResponseEntity<UserDto> updateUser(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<UserDto> updateUser(@PathVariable @ResourceId Integer userId,
                                               @RequestBody @UseValidator UserUpdateDto userUpdateDto) {
 
         var user = userService.updateUser(userId, userUpdateDto);
@@ -43,8 +42,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @AuthorizedBy(UserAuthorizer.class)
-    public ResponseEntity<Void> deleteUser(@PathVariable @EntityId Integer userId) {
-        System.out.println();
+    public ResponseEntity<Void> deleteUser(@PathVariable @ResourceId Integer userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }

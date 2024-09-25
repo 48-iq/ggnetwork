@@ -1,14 +1,11 @@
 package ru.ivanov.ggnetwork.controllers;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
-import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
-import ru.ivanov.ggnetwork.dto.group.GroupCreateDto;
 import ru.ivanov.ggnetwork.services.GroupService;
 import ru.ivanov.ggnetwork.services.UsersGroupsService;
 
@@ -25,7 +22,7 @@ public class UserGroupsController {
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/subscribe-to-group/{groupId}")
     public ResponseEntity<?> subscribe(@PathVariable Integer groupId,
-                                       @PathVariable @EntityId Integer userId) {
+                                       @PathVariable @ResourceId Integer userId) {
         usersGroupsService.subscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }
@@ -33,7 +30,7 @@ public class UserGroupsController {
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/unsubscribe-from-group/{groupId}")
     public ResponseEntity<?> unsubscribe(@PathVariable Integer groupId,
-                                         @PathVariable @EntityId Integer userId) {
+                                         @PathVariable @ResourceId Integer userId) {
         usersGroupsService.unsubscribe(userId, groupId);
         return ResponseEntity.ok().build();
     }

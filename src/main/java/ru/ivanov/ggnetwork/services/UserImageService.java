@@ -27,14 +27,14 @@ public class UserImageService {
 
     public List<Integer> getImagesByUser(Integer userId) {
         if (!userRepository.existsById(userId))
-            throw new EntityNotFoundException("user with username " + userId + " not found");
+            throw new EntityNotFoundException("user with id " + userId + " not found");
         return  userImageRepository.findImagesByUser(userId);
     }
 
     @Transactional
     public Integer addImage(Integer userId, MultipartFile file) {
         if (!userRepository.existsById(userId))
-            throw new EntityNotFoundException("user with username" + userId + " not found");
+            throw new EntityNotFoundException("user with id" + userId + " not found");
         var image = imageService.save(file);
         userImageRepository.addUserImageAssociation(userId, image);
         return image;
@@ -44,7 +44,7 @@ public class UserImageService {
     public void removeImage(Integer userId, Integer imageId) {
         var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with username " + userId + " not found");
+            throw new EntityNotFoundException("user with id " + userId + " not found");
         var user = userOptional.get();
         if (imageId.equals(user.getIcon()))
             user.setIcon(null);
@@ -56,12 +56,20 @@ public class UserImageService {
     public void removeAllImages(Integer userId) {
         var userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty())
-            throw new EntityNotFoundException("user with username " + userId + " not found");
+            throw new EntityNotFoundException("user with id " + userId + " not found");
         var images = userImageRepository.getAllUserImages(userId);
         userImageRepository.removeAllUserImagesAssociations(userId);
         for (var image: images) {
             imageService.delete(image.getId());
         }
+    }
+
+    @Transactional
+    public void setIcon(Integer userId, Integer imageId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("user with id " + userId + " not found"));
+        user.setIcon(imageId);
+        userRepository.save(user);
     }
 
 }

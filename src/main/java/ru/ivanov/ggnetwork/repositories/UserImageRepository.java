@@ -42,7 +42,7 @@ public interface UserImageRepository extends JpaRepository<User, Integer> {
     void removeAllUserImagesAssociations(Integer userId);
 
     @Query(nativeQuery = true,
-            value = "select exist( " +
+            value = "select exists( " +
                     "select 1 from users_images where user_id = ?1 and image_id = ?2 " +
                     ")")
     boolean checkOnBelong(Integer userId, Integer imageId);

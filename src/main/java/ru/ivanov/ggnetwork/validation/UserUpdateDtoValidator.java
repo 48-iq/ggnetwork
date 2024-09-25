@@ -34,7 +34,7 @@ public class UserUpdateDtoValidator implements Validator {
                 errors.reject("surname", "surname is invalid");
         }
         if (userUpdateDto.getEmail() != null) {
-            var pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");
+            var pattern = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$");
             var matcher = pattern.matcher(userUpdateDto.getEmail());
             if (!matcher.matches())
                 errors.reject("email", "email is invalid");

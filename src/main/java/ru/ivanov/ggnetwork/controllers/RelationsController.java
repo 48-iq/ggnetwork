@@ -1,11 +1,10 @@
 package ru.ivanov.ggnetwork.controllers;
 
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.services.RelationsService;
 
@@ -30,14 +29,14 @@ public class RelationsController {
 
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/subscribe-to-user/{subscriptionUserId}")
-    public ResponseEntity<?> subscribe(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<?> subscribe(@PathVariable @ResourceId Integer userId,
                                        @PathVariable Integer subscriptionUserId) {
         relationsService.subscribe(userId, subscriptionUserId);
         return ResponseEntity.ok().build();
     }
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/unsubscribe-from-user/{subscriptionUserId}")
-    public ResponseEntity<?> unsubscribe(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<?> unsubscribe(@PathVariable @ResourceId Integer userId,
                                          @RequestParam Integer subscriptionUserId) {
         relationsService.unsubscribe(userId, subscriptionUserId);
         return ResponseEntity.ok().build();

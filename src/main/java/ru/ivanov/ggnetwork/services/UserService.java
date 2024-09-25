@@ -55,7 +55,6 @@ public class UserService {
         user.setSurname(userUpdateDto.getSurname());
         user.setEmail(userUpdateDto.getEmail());
         user.setStatus(userUpdateDto.getStatus());
-        user.setIcon(userUpdateDto.getIcon());
         var updatedUser = userRepository.save(user);
         return UserDto.from(updatedUser);
     }

@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.aop.annotations.UseValidator;
 import ru.ivanov.ggnetwork.authorization.GroupAuthorizer;
 import ru.ivanov.ggnetwork.authorization.GroupPostAuthorizer;
 import ru.ivanov.ggnetwork.dto.post.PostCreateDto;
 import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.dto.post.PostUpdateDto;
-import ru.ivanov.ggnetwork.entities.GroupPost;
 import ru.ivanov.ggnetwork.services.GroupPostService;
 
 @RestController
@@ -23,7 +22,7 @@ public class GroupPostController {
     @AuthorizedBy(GroupAuthorizer.class)
     @PostMapping("/{groupId}")
     public ResponseEntity<PostDto> createPost(@ModelAttribute @UseValidator PostCreateDto postCreateDto,
-                                             @PathVariable @EntityId Integer groupId) {
+                                             @PathVariable @ResourceId Integer groupId) {
 
         var post = groupPostService.createPost(groupId, postCreateDto);
         return ResponseEntity.ok(post);
@@ -32,7 +31,7 @@ public class GroupPostController {
     @AuthorizedBy(GroupPostAuthorizer.class)
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePost(@ModelAttribute @UseValidator PostUpdateDto postUpdateDto,
-                                              @PathVariable @EntityId Integer postId) {
+                                              @PathVariable @ResourceId Integer postId) {
         var post = groupPostService.updatePost(postId, postUpdateDto);
         return ResponseEntity.ok(post);
     }

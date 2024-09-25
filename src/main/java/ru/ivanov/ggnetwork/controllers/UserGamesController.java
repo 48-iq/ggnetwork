@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.authorization.UserAuthorizer;
 import ru.ivanov.ggnetwork.services.UserGameService;
 
@@ -16,7 +16,7 @@ public class UserGamesController {
 
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/plays/{gameId}")
-    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<Void> addGameToUserHasPlays(@PathVariable @ResourceId Integer userId,
                                                       @PathVariable Integer gameId) {
         userGamesService.addGameToUserPlays(userId, gameId);
         return ResponseEntity.ok().build();
@@ -24,7 +24,7 @@ public class UserGamesController {
 
     @AuthorizedBy(UserAuthorizer.class)
     @PostMapping("/played/{gameId}")
-    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<Void> addGameToUserHasPlayed(@PathVariable @ResourceId Integer userId,
                                                        @PathVariable Integer gameId) {
 
         userGamesService.addGameToUserHasPlayed(userId, gameId);
@@ -33,7 +33,7 @@ public class UserGamesController {
 
     @AuthorizedBy(UserAuthorizer.class)
     @DeleteMapping("/plays/{gameId}")
-    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<Void> deleteGameFromPlays(@PathVariable @ResourceId Integer userId,
                                                     @PathVariable Integer gameId) {
 
         userGamesService.removeGameFromUserPlays(userId, gameId);
@@ -42,7 +42,7 @@ public class UserGamesController {
 
     @AuthorizedBy(UserAuthorizer.class)
     @DeleteMapping("/played/{gameId}")
-    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable @EntityId Integer userId,
+    public ResponseEntity<Void> deleteGameFromHasPlayed(@PathVariable @ResourceId Integer userId,
                                                         @PathVariable Integer gameId) {
         userGamesService.removeGameFromUserHasPlayed(userId, gameId);
         return ResponseEntity.ok().build();

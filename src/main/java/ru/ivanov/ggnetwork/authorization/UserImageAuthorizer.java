@@ -3,18 +3,20 @@ package ru.ivanov.ggnetwork.authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ivanov.ggnetwork.entities.User;
-import ru.ivanov.ggnetwork.repositories.GroupPostRepository;
 
 import java.util.Map;
 
 @Component
-public class GroupPostAuthorizer implements Authorizer {
+public class UserImageAuthorizer implements Authorizer{
     @Autowired
-    private GroupPostRepository groupPostRepository;
+    private UserAuthorizer userAuthorizer;
+    @Autowired
+    private ImageAuthorizer imageAuthorizer;
+
 
     @Override
     public boolean checkAuthorize(User user, Map<String, Integer> resources) {
-        Integer groupPostId = resources.get("postId");
-        return groupPostRepository.checkOnBelong(user.getId(), groupPostId);
+        return (userAuthorizer.checkAuthorize(user, resources)
+        && imageAuthorizer.checkAuthorize(user, resources));
     }
 }

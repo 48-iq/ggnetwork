@@ -12,10 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.ivanov.ggnetwork.aop.annotations.AuthorizedBy;
-import ru.ivanov.ggnetwork.aop.annotations.EntityId;
+import ru.ivanov.ggnetwork.aop.annotations.ResourceId;
 import ru.ivanov.ggnetwork.authorization.Authorizer;
+import ru.ivanov.ggnetwork.exceptions.AuthenticationException;
 import ru.ivanov.ggnetwork.exceptions.ExpectedAnnotationException;
 import ru.ivanov.ggnetwork.security.UserDetailsImpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @Component
 @Aspect
@@ -39,27 +43,35 @@ public class AuthorizationAspect {
         var method = methodSignature.getMethod();
         var args = pjp.getArgs();
         var params = method.getParameters();
-        for (int i = 0; i < params.length; i++) {
-            var param = params[i];
-            var entityIdAnnotation = param.getAnnotation(EntityId.class);
-            if (entityIdAnnotation != null) {
-                var authorizedByAnnotation = method.getAnnotation(AuthorizedBy.class);
-                if (authorizedByAnnotation == null)
-                    throw new ExpectedAnnotationException("AuthorizedBy annotation expected");
-                var authorizerType = authorizedByAnnotation.value();
-                var authorizerBean = (Authorizer) context.getBean(authorizerType);
-                var authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (    authentication == null ||
-                        !authentication.isAuthenticated() ||
-                        authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ANONYMOUS")))
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("only for authenticated users");
-                var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-                var user = userDetails.getUser();
-                var entityId = (Integer) args[i];
-                if (!authorizerBean.checkAuthorize(user, entityId)) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("action is not allowed");
+        var resources = new HashMap<String, Integer>();
+        var authorizedByAnnotation = method.getAnnotation(AuthorizedBy.class);
+        if (authorizedByAnnotation != null) {
+            for (int i = 0; i < params.length; i++) {
+                var param = params[i];
+                var resourceIdAnnotation = param.getAnnotation(ResourceId.class);
+                if (resourceIdAnnotation != null) {
+                    if (! (args[i] instanceof Integer))
+                        throw new ClassCastException("can't cast value " + args[i] + " to type Integer");
+                    var arg = (Integer) args[i];
+                    var resourceName = "";
+                    if (!resourceIdAnnotation.value().isBlank())
+                        resourceName = resourceIdAnnotation.value();
+                    else
+                        resourceName = param.getName();
+                    resources.put(resourceName, arg);
                 }
             }
+            var authorizerType = authorizedByAnnotation.value();
+            var authorizer = context.getBean(authorizerType);
+            var authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()
+            || authentication.getAuthorities().contains("ROLE_ANONYMOUS"))
+                throw new AuthenticationException("resource only for authenticated users");
+            var userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            var user = userDetails.getUser();
+            if (!authorizer.checkAuthorize(user, resources))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("actions on this resource not allowed for you");
         }
         return pjp.proceed(pjp.getArgs());
     }
