@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.ivanov.ggnetwork.dto.post.PostDto;
 import ru.ivanov.ggnetwork.entities.User;
 
 import java.util.List;
@@ -140,6 +139,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     )
     void removeUsersPostsAssociations(Integer userId);
 
+
+    @Query(nativeQuery = true,
+    value = "remove from chats_users where user_id = ?1")
+    void removeUsersChatsAssociations(Integer userId);
+
+
     @Query(nativeQuery = true,
         value = "select * from subscriptions as s1 " +
                 "join subscriptions as s2 on s1.user_id = s2.subscribed_user_id " +
@@ -237,7 +242,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                     ")")
     Page<User> findSubscribers(Integer userId, Pageable pageable);
 
-
+    @Query("select u from User u where u.id in :usersIds")
+    List<User> findByIds(List<Integer> usersIds);
 
 
 

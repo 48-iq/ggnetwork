@@ -68,6 +68,7 @@ public class UserService {
             userRepository.removeUsersPostsAssociations(user.getId());
             userRepository.removeUserGroupsAndUsersGroupsAssociations(user.getId());
             userRepository.removeUsersUsersAssociations(userId);
+            userRepository.removeUsersChatsAssociations(userId);
             userRepository.removeUserGamesAssociations(user.getId());
             userRepository.deleteById(user.getId());
         }
