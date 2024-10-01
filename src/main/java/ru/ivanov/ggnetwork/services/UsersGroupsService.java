@@ -54,14 +54,14 @@ public class UsersGroupsService {
     public void subscribe(Integer userId, Integer groupId) {
         checkGroup(groupId);
         checkUser(userId);
-        groupRepository.subscribe(groupId, userId);
+        groupRepository.subscribe(userId, groupId);
     }
 
     @Transactional
     public void unsubscribe(Integer userId, Integer groupId) {
         checkGroup(groupId);
         checkUser(userId);
-        groupRepository.unsubscribe(groupId, userId);
+        groupRepository.unsubscribe(userId, groupId);
     }
 
     public List<GroupDto> findGroupsByUser(Integer userId) {

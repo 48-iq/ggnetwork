@@ -30,6 +30,8 @@ public class GroupCreateDtoValidator implements Validator {
             if (groupCreateDto.getIcon().getSize() > 1024 * 1024 * 100)
                 errors.reject("icon", "icon size > 100MB");
         }
+        System.out.println(groupCreateDto.getTitle());
+        System.out.println(groupCreateDto);
         if (groupCreateDto.getTitle() == null)
             errors.reject("title", "title is null");
         else {
