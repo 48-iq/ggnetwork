@@ -62,6 +62,7 @@ public class UsersGroupsService {
         checkGroup(groupId);
         checkUser(userId);
         groupRepository.unsubscribe(userId, groupId);
+
     }
 
     public List<GroupDto> findGroupsByUser(Integer userId) {
@@ -92,6 +93,7 @@ public class UsersGroupsService {
     public PageDto<GroupDto> findGroupsByOwner(Integer userId, Integer page, Integer size) {
         return groupPageDtoFrom(groupRepository.findGroupsByOwner(userId, PageRequest.of(page, size)));
     }
+
 
 
 }
