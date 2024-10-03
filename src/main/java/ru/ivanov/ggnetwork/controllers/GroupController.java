@@ -73,5 +73,17 @@ public class GroupController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{groupId}/subscribers")
+    public ResponseEntity<?> findGroupSubscribers(@PathVariable Integer groupId,
+                                                  @RequestParam(required = false) Integer page,
+                                                  @RequestParam(required = false) Integer size) {
+        if ((page == null && size != null) || (page != null && size == null))
+            return ResponseEntity.badRequest().body("param page must be declared with param size");
 
+        if (page != null)
+            return ResponseEntity.ok(usersGroupsService.findUsersByGroup(groupId, page, size));
+        else
+            return ResponseEntity.ok(usersGroupsService.findGroupsByUser(groupId));
+
+    }
 }

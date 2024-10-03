@@ -94,6 +94,10 @@ public class UsersGroupsService {
         return groupPageDtoFrom(groupRepository.findGroupsByOwner(userId, PageRequest.of(page, size)));
     }
 
+    public boolean checkSubscription(Integer userId, Integer groupId) {
+        return groupRepository.checkOnSubscribe(userId, groupId);
+
+    }
 
 
 }

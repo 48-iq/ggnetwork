@@ -35,10 +35,6 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
     private PasswordEncoder passwordEncoder;
     @Value("${app.admin.password}")
     private String adminPassword;

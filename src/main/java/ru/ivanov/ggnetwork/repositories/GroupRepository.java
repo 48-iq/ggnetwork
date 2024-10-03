@@ -115,4 +115,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     boolean checkOnBelong(Integer userId, Integer groupId);
 
 
+    @Query(nativeQuery = true,
+            value = "select exists (" +
+                    "select 1 from users_groups where user_id = ?1 " +
+                    "and group_id = ?2 " +
+                    ")")
+    boolean checkOnSubscribe(Integer userId, Integer groupId);
+
 }

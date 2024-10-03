@@ -59,5 +59,11 @@ public class UserGroupsController {
             return ResponseEntity.ok(usersGroupsService.findGroupsByOwner(userId));
     }
 
+    @GetMapping("/check/subscribe/{groupId}")
+    public ResponseEntity<Boolean> checkSubscription(@PathVariable Integer userId,
+                                                     @PathVariable Integer groupId) {
+        return ResponseEntity.ok(usersGroupsService.checkSubscription(userId, groupId));
+    }
+
 
 }
