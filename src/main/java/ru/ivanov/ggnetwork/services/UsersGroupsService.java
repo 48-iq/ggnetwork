@@ -55,6 +55,14 @@ public class UsersGroupsService {
         checkGroup(groupId);
         checkUser(userId);
         groupRepository.subscribe(userId, groupId);
+        var group = groupRepository.findById(groupId)
+                .orElseThrow();
+        Integer subscribersCount = group.getSubscribersCount();
+        if (subscribersCount == null)
+            subscribersCount = 0;
+        subscribersCount += 1;
+        group.setSubscribersCount(subscribersCount);
+        groupRepository.save(group);
     }
 
     @Transactional
@@ -62,7 +70,15 @@ public class UsersGroupsService {
         checkGroup(groupId);
         checkUser(userId);
         groupRepository.unsubscribe(userId, groupId);
-
+        var group = groupRepository.findById(groupId)
+                        .orElseThrow();
+        Integer subscribersCount = group.getSubscribersCount();
+        if (subscribersCount == null)
+            subscribersCount = 0;
+        if (subscribersCount > 0)
+            subscribersCount -= 1;
+        group.setSubscribersCount(subscribersCount);
+        groupRepository.save(group);
     }
 
     public List<GroupDto> findGroupsByUser(Integer userId) {

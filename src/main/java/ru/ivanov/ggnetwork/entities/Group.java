@@ -24,6 +24,8 @@ public class Group {
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
 
+    private Integer subscribersCount;
+
     @ManyToMany
     @JoinTable(name = "users_groups",
             uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}),

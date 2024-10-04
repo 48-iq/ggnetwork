@@ -13,6 +13,7 @@ public class GroupDto {
     private String title;
     private String description;
     private Integer icon;
+    private Integer subscribersCount;
 
     public static GroupDto from(Group group) {
         return GroupDto.builder()
@@ -20,6 +21,7 @@ public class GroupDto {
                 .title(group.getTitle())
                 .description(group.getDescription())
                 .icon(group.getIcon())
+                .subscribersCount(group.getSubscribersCount())
                 .build();
     }
 }

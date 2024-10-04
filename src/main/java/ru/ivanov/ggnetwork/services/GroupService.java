@@ -69,7 +69,9 @@ public class GroupService {
             group.setIcon(imageService.save(groupCreateDto.getIcon()));
         }
         var savedGroup = groupRepository.save(group);
-        return GroupDto.from(group);
+        var groupDto = GroupDto.from(savedGroup);
+        groupDto.setSubscribersCount(1);
+        return groupDto;
     }
 
     @Transactional
