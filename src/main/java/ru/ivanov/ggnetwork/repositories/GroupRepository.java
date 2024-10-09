@@ -102,9 +102,9 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Modifying
     @Query(nativeQuery = true,
             value = "delete from viewed_group_posts where " +
-                    "post_id in (select id from posts where creator_id = ?1); " +
+                    "post_id in (select id from group_posts where creator_id = ?1); " +
                     "delete from group_post_grades where " +
-                    "post_id in (select id from posts where creator_id = ?1); " +
+                    "post_id in (select id from group_posts where creator_id = ?1); " +
                     "delete from group_posts where creator_id = ?1")
     void removePostsAssociations(Integer groupId);
 
