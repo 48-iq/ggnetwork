@@ -6,8 +6,8 @@ COPY ./src ./src
 RUN mvn package
 
 FROM eclipse-temurin:21-jre-jammy AS production
-COPY --from=build /app/target/user-service-*.jar /user-service.jar
+COPY --from=build /app/target/ggnetwork-*.jar /ggnetwork.jar
 
 EXPOSE 8080
-CMD ["java", "-jar", "user-service.jar"]
+CMD ["java", "-jar", "ggnetwrok.jar"]
 
