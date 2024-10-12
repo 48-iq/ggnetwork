@@ -9,5 +9,5 @@ FROM eclipse-temurin:21-jre-jammy AS production
 COPY --from=build /app/target/ggnetwork-*.jar /ggnetwork.jar
 
 EXPOSE 8080
-CMD ["java", "-jar", "ggnetwrok.jar"]
+CMD ["java", "-jar", "ggnetwork.jar"]
 

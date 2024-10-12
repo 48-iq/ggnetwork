@@ -1,0 +1,40 @@
+
+services:
+  ggnewtork:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: ggnetwork
+    ports:
+      - 8080:8080
+    networks:
+      backend:
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+
+
+  postgresdb:
+    image: postgres
+    restart: always
+    volumes:
+      - postgresdb-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ggnetwork
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - 5432:5432
+    networks:
+      backend:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgresdb-data:
+
+networks:
+  backend:
